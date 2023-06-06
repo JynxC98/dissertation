@@ -8,6 +8,7 @@ Finised reading the following papers:
 Mean-Variance Optimisation for Portfolio
 Management.
 4. Coded the traditional mean-variance model for the dissertation purpose.
+5. Wrote the code for gathering data from yahoo finance for the stocks.
 ### 1st June 2021
 1. Had first supervisor meeting.
 2. Started comprehensive research on markets.
