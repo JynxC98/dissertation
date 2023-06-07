@@ -1,9 +1,10 @@
 """
 Script that would select the stocks which would outperform the market returns.
-We will be using the NSE market for our stock selection.
+We will be using the NIFTY 50 index for our stock selection.
 """
 from typing import List
-from datetime import datetime
+from datetime import datetime, timedelta
+from collections import defaultdict
 
 import numpy as np
 import pandas as pd
@@ -42,13 +43,17 @@ def calculate_sharpe_and_sortino_ratio(
     excess_return = portfolio_return - risk_free_rate * 252
 
     # Calculation of Sharpe Ratio
-    portfolio_volatility = np.std(excess_return)
-    sharpe_ratio = (excess_return) / portfolio_volatility
+    portfolio_volatility = np.std(returns - risk_free_rate)
+    sharpe_ratio = (excess_return) / (portfolio_volatility * np.sqrt(NUM_TRADING_DAYS))
 
     # Calculation of Sortino Ratio
     downside_returns = np.where(returns < risk_free_rate, returns - risk_free_rate, 0)
     downside_std = np.std(downside_returns)
-    sortino_ratio = excess_return / downside_std
+    sortino_ratio = (
+        (excess_return / (downside_std * np.sqrt(NUM_TRADING_DAYS)))
+        if np.std(downside_returns) != 0
+        else 0
+    )
 
     return [sharpe_ratio, sortino_ratio]
 
@@ -102,11 +107,39 @@ class StockSelection:
             )["Close"]
         return pd.DataFrame(stock_data)
 
-    def calculate_returns(self) -> np.array:
+    def calculate_returns(self) -> pd.DataFrame:
         """
         Calculates the log return of the data.
         """
         data = self.get_data_from_yahoo()
         log_return = np.log(data / data.shift(1))
         self.returns = log_return[1:]  # We save the value of log returns.
-        return log_return[1:]  # We skip the first row to eliminate the NaN values.
+        return pd.DataFrame(
+            log_return[1:]
+        )  # We skip the first row to eliminate the NaN values.
+
+    def return_top_stocks(self) -> pd.DataFrame:
+        """
+        Returns the top 15 stocks based on sharpe ratio and sortino ratio.
+        """
+        stock_data = defaultdict(list)
+        for stock in self.returns[
+            1:
+        ]:  # We start from column 1 as column 0 is the index's data.
+            stock_data["ticker"] = stock
+            stock_data["sharpe ratio"] = calculate_sharpe_and_sortino_ratio(
+                self.returns[stock], RISK_FREE_RATE
+            )[0]
+            stock_data["sortino ratio"] = calculate_sharpe_and_sortino_ratio(
+                self.returns[stock], RISK_FREE_RATE
+            )[1]
+        stock_data = pd.DataFrame(stock_data)
+
+
+if __name__ == "__main__":
+    STOCKS = ["AAPL", "MSFT", "TSLA", "GOOGL", "AMZN", "IBM"]
+
+    END_DATE = datetime.now()
+    START_DATE = END_DATE - timedelta(days=365 * 10)
+    portfolio = StockSelection(tickers=STOCKS, start_date=START_DATE, end_date=END_DATE)
+    returns = portfolio.calculate_returns()
