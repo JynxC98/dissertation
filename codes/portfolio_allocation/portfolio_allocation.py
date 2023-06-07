@@ -8,8 +8,9 @@ from collections import defaultdict
 
 import numpy as np
 import pandas as pd
+import plotly.express as px
 
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import yfinance as yf
 
 NUM_TRADING_DAYS = 252  # Assumption
@@ -132,7 +133,26 @@ class StockSelection:
                 calculate_sharpe_and_sortino_ratio(returns[stock], RISK_FREE_RATE)[1]
             )
         stock_data = pd.DataFrame(stock_data)
-        return stock_data
+        stock_data["kpi"] = (
+            0.7 * stock_data["sharpe ratio"] + 0.3 * stock_data["sortino ratio"]
+        )
+        stock_data.sort_values(by=["kpi"], ascending=False, inplace=True)
+        self.portfolio_data = stock_data[0:15]
+        return stock_data[0:3]
+
+    def plot_returns(self) -> None:
+        """
+        Plots the cumulative returns of the stock returns.
+        """
+        top_stocks = self.return_top_stocks()
+
+        cumulative_returns = (1 + self.returns[top_stocks["ticker"]]).cumprod()
+        fig = px.line(
+            cumulative_returns,
+            labels={"value": "times compounded", "Date": "year"},
+            title="Annual compounding of the stocks",
+        )
+        fig.show()
 
 
 if __name__ == "__main__":
@@ -141,4 +161,4 @@ if __name__ == "__main__":
     END_DATE = datetime.now()
     START_DATE = END_DATE - timedelta(days=365 * 10)
     portfolio = StockSelection(tickers=STOCKS, start_date=START_DATE, end_date=END_DATE)
-    print(portfolio.return_top_stocks())
+    portfolio.plot_returns()
