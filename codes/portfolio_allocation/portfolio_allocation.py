@@ -14,7 +14,7 @@ import yfinance as yf
 
 NUM_TRADING_DAYS = 252  # Assumption
 RISK_FREE_RATE = (
-    0.073
+    0.045
     / NUM_TRADING_DAYS  # Data provided by https://tradingeconomics.com/india/government-bond-yield
 )  # Assuming risk free rate to be constant, we calculate daily risk free return
 
@@ -26,7 +26,7 @@ def calculate_sharpe_and_sortino_ratio(
     """
     Function used to calculate the Sharpe and Sortino Ratio for the stocks. \\
     Sharpe ratio is given as (E[X] - rf)/std(excess returns) \\
-    Sortino ratio is given as (E[X] - rd)/ std(negative asset returns)
+    Sortino ratio is given as (E[X] - rf)/ std(negative asset returns)
 
     Inputs
     ------
@@ -109,13 +109,13 @@ class StockSelection:
 
     def calculate_returns(self) -> pd.DataFrame:
         """
-        Calculates the log return of the data.
+        Calculates the percentage return of the data.
         """
         data = self.get_data_from_yahoo()
-        log_return = np.log(data / data.shift(1))
-        self.returns = log_return[1:]  # We save the value of log returns.
+        returns = data.pct_change().dropna()
+        self.returns = pd.DataFrame(returns)  # We save the value of log returns.
         return pd.DataFrame(
-            log_return[1:]
+            returns
         )  # We skip the first row to eliminate the NaN values.
 
     def return_top_stocks(self) -> pd.DataFrame:
@@ -123,17 +123,17 @@ class StockSelection:
         Returns the top 15 stocks based on sharpe ratio and sortino ratio.
         """
         stock_data = defaultdict(list)
-        for stock in self.returns[
-            1:
-        ]:  # We start from column 1 as column 0 is the index's data.
-            stock_data["ticker"] = stock
-            stock_data["sharpe ratio"] = calculate_sharpe_and_sortino_ratio(
-                self.returns[stock], RISK_FREE_RATE
-            )[0]
-            stock_data["sortino ratio"] = calculate_sharpe_and_sortino_ratio(
-                self.returns[stock], RISK_FREE_RATE
-            )[1]
+        returns = self.calculate_returns()
+        for stock in returns:  # We start from column 1 as column 0 is the index's data.
+            stock_data["ticker"].append(stock)
+            stock_data["sharpe ratio"].append(
+                calculate_sharpe_and_sortino_ratio(returns[stock], RISK_FREE_RATE)[0]
+            )
+            stock_data["sortino ratio"].append(
+                calculate_sharpe_and_sortino_ratio(returns[stock], RISK_FREE_RATE)[1]
+            )
         stock_data = pd.DataFrame(stock_data)
+        return stock_data
 
 
 if __name__ == "__main__":
@@ -142,4 +142,4 @@ if __name__ == "__main__":
     END_DATE = datetime.now()
     START_DATE = END_DATE - timedelta(days=365 * 10)
     portfolio = StockSelection(tickers=STOCKS, start_date=START_DATE, end_date=END_DATE)
-    returns = portfolio.calculate_returns()
+    print(portfolio.return_top_stocks())
