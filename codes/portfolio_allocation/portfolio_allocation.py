@@ -125,22 +125,15 @@ class StockSelection:
         """
         stock_data = defaultdict(list)
         returns = self.calculate_returns()
-        with alive_bar(total=returns.shape[1]) as pbar:
-            for (
-                stock
-            ) in returns:  # We start from column 1 as column 0 is the index's data.
-                stock_data["ticker"].append(stock)
-                stock_data["sharpe ratio"].append(
-                    calculate_sharpe_and_sortino_ratio(returns[stock], RISK_FREE_RATE)[
-                        0
-                    ]
-                )
-                stock_data["sortino ratio"].append(
-                    calculate_sharpe_and_sortino_ratio(returns[stock], RISK_FREE_RATE)[
-                        1
-                    ]
-                )
-                pbar()
+        for stock in returns:  # We start from column 1 as column 0 is the index's data.
+            stock_data["ticker"].append(stock)
+            stock_data["sharpe ratio"].append(
+                calculate_sharpe_and_sortino_ratio(returns[stock], RISK_FREE_RATE)[0]
+            )
+            stock_data["sortino ratio"].append(
+                calculate_sharpe_and_sortino_ratio(returns[stock], RISK_FREE_RATE)[1]
+            )
+
         stock_data = pd.DataFrame(stock_data)
         stock_data["kpi"] = (
             0.7 * stock_data["sharpe ratio"] + 0.3 * stock_data["sortino ratio"]
