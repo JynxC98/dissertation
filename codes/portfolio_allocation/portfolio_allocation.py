@@ -162,12 +162,3 @@ class StockSelection:
             title="Annual compounding of the stocks",
         )
         fig.show()
-
-
-if __name__ == "__main__":
-    STOCKS = ["AAPL", "MSFT", "TSLA", "GOOGL", "AMZN", "IBM"]
-
-    END_DATE = datetime.now()
-    START_DATE = END_DATE - timedelta(days=365 * 10)
-    portfolio = StockSelection(tickers=STOCKS, start_date=START_DATE, end_date=END_DATE)
-    portfolio.plot_returns()
