@@ -5,21 +5,19 @@ We will be using the NIFTY 50 index for our stock selection.
 from typing import List
 from datetime import datetime, timedelta
 from collections import defaultdict
-from helper_functions import (
-    calculate_sharpe_and_sortino_ratio,
-    minimise_function,
-    statistics,
-)
-
 import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from alive_progress import alive_bar
 import scipy.optimize as optimize
-
-import matplotlib.pyplot as plt
 import yfinance as yf
+
+from helper_functions import (
+    calculate_sharpe_and_sortino_ratio,
+    minimise_function,
+    statistics,
+)
 
 NUM_TRADING_DAYS = 252  # Assumption
 RISK_FREE_RATE = (
