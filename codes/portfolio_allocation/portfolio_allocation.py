@@ -5,11 +5,18 @@ We will be using the NIFTY 50 index for our stock selection.
 from typing import List
 from datetime import datetime, timedelta
 from collections import defaultdict
+from helper_functions import (
+    calculate_sharpe_and_sortino_ratio,
+    minimise_function,
+    statistics,
+)
 
 import numpy as np
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 from alive_progress import alive_bar
+import scipy.optimize as optimize
 
 import matplotlib.pyplot as plt
 import yfinance as yf
@@ -19,44 +26,6 @@ RISK_FREE_RATE = (
     0.07
     / NUM_TRADING_DAYS  # Data provided by https://tradingeconomics.com/india/government-bond-yield
 )  # Assuming risk free rate to be constant, we calculate daily risk free return
-
-
-# The function outside the `StockSelection` class are used to feed the stock data.
-def calculate_sharpe_and_sortino_ratio(
-    returns: np.array, risk_free_rate: float
-) -> List:
-    """
-    Function used to calculate the Sharpe and Sortino Ratio for the stocks. \\
-    Sharpe ratio is given as (E[X] - rf)/std(excess returns) \\
-    Sortino ratio is given as (E[X] - rf)/ std(negative asset returns)
-
-    Inputs
-    ------
-    returns: Log returns of the daily stock data
-    risk_free_rate: Tresury bond rates, assumed to be constant throughout the time period.
-
-    Returns
-    -------
-    Sharpe ratio and Sortino ratio respectively
-
-    """
-
-    excess_return = np.mean(returns - risk_free_rate) * NUM_TRADING_DAYS
-
-    # Calculation of Sharpe Ratio
-    portfolio_volatility = np.std(returns - risk_free_rate, ddof=1)
-    sharpe_ratio = (excess_return) / (portfolio_volatility * np.sqrt(NUM_TRADING_DAYS))
-
-    # Calculation of Sortino Ratio
-    downside_returns = np.where(returns < risk_free_rate, returns - risk_free_rate, 0)
-    downside_std = np.std(downside_returns, ddof=1)
-    sortino_ratio = (
-        (excess_return / (downside_std * np.sqrt(NUM_TRADING_DAYS)))
-        if np.std(downside_returns) != 0
-        else 0
-    )
-
-    return [sharpe_ratio, sortino_ratio]
 
 
 class StockSelection:
@@ -77,6 +46,10 @@ class StockSelection:
 
     """
 
+    NUM_PORTFOLIO = (
+        10000  # Number of random portfolios used to generate Efficient Frontier
+    )
+
     def __init__(self, tickers: List, start_date: datetime, end_date: datetime) -> None:
         """
         Initialisation function of the `StockSelection` class.
@@ -90,6 +63,8 @@ class StockSelection:
         # These parameters will be stored after calculation
         self.portfolio_data = None
         self.returns = None
+        self.weights = None
+        self.top_stocks = None
 
     def get_data_from_yahoo(self) -> pd.DataFrame:
         """
@@ -142,7 +117,7 @@ class StockSelection:
         self.portfolio_data = stock_data[0:15]
         return stock_data[0:15]
 
-    def plot_returns(self) -> None:
+    def plot_returns(self) -> pd.DataFrame:
         """
         Plots the cumulative returns of the stock returns.
         """
@@ -155,3 +130,150 @@ class StockSelection:
             title="Annual compounding of the stocks",
         )
         fig.show()
+        self.top_stocks = top_stocks
+        return top_stocks
+
+    def generate_portfolios(self) -> dict:
+        """
+        Generates random portfolios for creating an efficient frontier.
+        """
+        portfolio_data = defaultdict(list)
+        top_stocks = self.plot_returns()
+        weights = []
+        required_returns = self.returns[top_stocks["ticker"].tolist()]
+        with alive_bar(self.NUM_PORTFOLIO) as pbar:
+            print("Generating portfolios \n")
+            for _ in range(self.NUM_PORTFOLIO):
+                weight = np.random.random(len(top_stocks["ticker"]))
+                weight /= np.sum(weight)
+                weights.append(weight)
+
+                portfolio_return = (
+                    np.sum(required_returns.mean() * weight) * NUM_TRADING_DAYS
+                )
+                excess_return = required_returns - RISK_FREE_RATE
+                portfolio_data["mean"].append(portfolio_return)
+                portfolio_volatility = np.sqrt(
+                    np.dot(
+                        weight.T,
+                        np.dot(excess_return.cov() * NUM_TRADING_DAYS, weight),
+                    )
+                )
+                portfolio_data["risk"].append(portfolio_volatility)
+                pbar()
+
+        fig = px.scatter(
+            data_frame=portfolio_data,
+            x="risk",
+            y="mean",
+            color=(np.array(portfolio_data["mean"]) - RISK_FREE_RATE * 252)
+            / np.array(portfolio_data["risk"]),
+            color_continuous_scale="Viridis",
+            labels={"risk": "Expected Volatility", "mean": "Expected Return"},
+            title="Portfolio Analysis",
+        )
+
+        fig.update_layout(
+            xaxis=dict(title="Expected Volatility"),
+            yaxis=dict(title="Expected Return"),
+            coloraxis_colorbar=dict(title="Sharpe Ratio"),
+            showlegend=False,
+        )
+
+        fig.show()
+
+        self.weights = np.array(weights)
+        self.portfolio_data = portfolio_data
+
+        return portfolio_data
+
+    def optimize_portfolio(self) -> np.array:
+        """
+        Used to optimize the weights with respect to the sharpe ratio.
+        It uses the SLSPQ algorithm to find the global minima of the function.
+        Here is the documentation: https://docs.scipy.org/doc/scipy/reference/optimize.html
+
+        Returns
+        -------
+        Optimal weights in which one should invest in the top stocks.
+        """
+        _ = self.generate_portfolios()
+        returns = self.returns[self.top_stocks["ticker"].tolist()]
+        func = minimise_function
+        constraints = {"type": "eq", "fun": lambda x: np.sum(x) - 1}
+        # The weights can at the most be 1.
+        bounds = tuple((0, 1) for _ in range(len(self.top_stocks["ticker"])))
+        random_weights = np.random.random(len(self.top_stocks["ticker"]))
+        random_weights /= np.sum(random_weights)
+        optimum = optimize.minimize(
+            fun=func,
+            x0=np.array(
+                random_weights
+            ),  # We are randomly selecting a weight for optimisation
+            args=returns,
+            method="SLSQP",
+            bounds=bounds,
+            constraints=constraints,
+        )
+        return optimum["x"].round(4)
+
+    def display_statistics(self, weights):
+        """
+        Displays the Sharpe Ratio, Expected return and the volatility of the
+        given portfolio.
+        """
+        return (
+            "Expected return, volatility and Sharpe ratio: ",
+            statistics(weights.round(3), self.returns[self.top_stocks["ticker"]]),
+        )
+
+    def display_and_print_portfolio(self) -> None:
+        """
+        Generates the point on the efficient portfolio frontier where
+        the portfolio shows the optimal return and risk.
+        """
+        optimal = self.optimize_portfolio()
+        portfolio_data = self.portfolio_data
+        result = {}
+        for stock, optimum_weight in zip(self.top_stocks["ticker"], optimal):
+            result[stock] = optimum_weight
+
+        print(self.display_statistics(optimal))
+        fig = px.scatter(
+            data_frame=portfolio_data,
+            x="risk",
+            y="mean",
+            color=(np.array(portfolio_data["mean"]) - RISK_FREE_RATE * 252)
+            / np.array(portfolio_data["risk"]),
+            color_continuous_scale="Viridis",
+            title="Portfolio Analysis",
+        )
+
+        fig.add_trace(
+            go.Scatter(
+                x=[statistics(optimal, self.returns[self.top_stocks["ticker"]])[1]],
+                y=[statistics(optimal, self.returns[self.top_stocks["ticker"]])[0]],
+                mode="markers",
+                marker=dict(color="red", size=15),
+            )
+        )
+
+        fig.update_layout(
+            xaxis=dict(title="Expected Volatility"),
+            yaxis=dict(title="Expected Return"),
+            coloraxis_colorbar=dict(title="Sharpe Ratio"),
+            showlegend=True,
+        )
+
+        fig.show()
+
+
+if __name__ == "__main__":
+    # Adding file path for the stock data
+    path = r"~/dissertation/datasets/required_stocks.csv"
+    END_TIME = datetime.now()
+    START_TIME = END_TIME - timedelta(365 * 10)  # We take data of 10 years
+    data = pd.read_csv(path)
+    stocks = data["indices"][1:].tolist()
+    portfolio = StockSelection(tickers=stocks, start_date=START_TIME, end_date=END_TIME)
+    portfolio.display_and_print_portfolio()
