@@ -42,16 +42,13 @@ def statistics(weights, returns, n_days=252) -> np.array:
     portfolio_return = np.sum(np.dot(returns.mean(), weights.T)) * n_days
     excess_return = returns - RISK_FREE
     portfolio_volatility = np.sqrt(
-        np.dot(
-            weights,
-            np.dot(excess_return.cov() * n_days, weights.T),
-        )
-    )
+        np.dot(weights.T, np.dot(excess_return.cov(), weights))
+    ) * np.sqrt(n_days)
     return np.array(
         [
             portfolio_return,
             portfolio_volatility,
-            (portfolio_return - RISK_FREE * 252) / portfolio_volatility,
+            (portfolio_return - RISK_FREE * n_days) / portfolio_volatility,
         ]
     )
 
