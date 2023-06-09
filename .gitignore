@@ -161,3 +161,7 @@ cython_debug/
 /datasets
 .jupyter/
 .DS_Store
+#Made to run all the test scripts
+test.py 
+*.html
+/images

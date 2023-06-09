@@ -1,4 +1,11 @@
 # Daily logs to record the progress
+### 8th June and 9th June
+1. Finished reading:
+   - Intelligent Fusion Model(Padhi et al.)
+   - Predicting the direction of stock market using decision trees(Basak et al.)
+   - Stock trading decisions using ensemble‐based forecasting models: a study of the Indian stock market(Jothimani et al)
+2. Integrated the top stock selection and mean-variance model code.
+3. Studied about the Jump Diffusion models for asset pricing simulation.
 ### 7th June
 1. Finished coding the top stock selection based on Sharpe and Sortino Ratio.
 2. Started reading more literature on random forest.

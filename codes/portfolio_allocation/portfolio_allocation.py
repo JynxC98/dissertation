@@ -4,6 +4,7 @@ We will be using the NIFTY 50 index for our stock selection.
 """
 from typing import List
 from datetime import datetime, timedelta
+import os
 from collections import defaultdict
 import numpy as np
 import pandas as pd
@@ -12,6 +13,7 @@ import plotly.graph_objects as go
 from alive_progress import alive_bar
 import scipy.optimize as optimize
 import yfinance as yf
+
 
 from helper_functions import (
     calculate_sharpe_and_sortino_ratio,
@@ -45,7 +47,7 @@ class StockSelection:
     """
 
     NUM_PORTFOLIO = (
-        10000  # Number of random portfolios used to generate Efficient Frontier
+        500000  # Number of random portfolios used to generate Efficient Frontier
     )
 
     def __init__(self, tickers: List, start_date: datetime, end_date: datetime) -> None:
@@ -113,6 +115,7 @@ class StockSelection:
         )
         stock_data.sort_values(by=["kpi"], ascending=False, inplace=True)
         self.portfolio_data = stock_data[0:10]
+        print(stock_data)
         return stock_data[0:10]
 
     def plot_returns(self) -> pd.DataFrame:
@@ -128,6 +131,11 @@ class StockSelection:
             title="Annual compounding of the stocks",
         )
         fig.show()
+
+        # Code to create a folder for all the generated graphs.
+        if not os.path.exists("images"):
+            os.mkdir("images")
+        fig.write_html("images/wealth_growth.html")
         self.top_stocks = top_stocks
         return top_stocks
 
@@ -160,6 +168,8 @@ class StockSelection:
                 portfolio_data["risk"].append(portfolio_volatility)
                 pbar()
 
+        # Code to create a folder for all the graphs
+
         fig = px.scatter(
             data_frame=portfolio_data,
             x="risk",
@@ -177,8 +187,8 @@ class StockSelection:
             coloraxis_colorbar=dict(title="Sharpe Ratio"),
             showlegend=False,
         )
-
         fig.show()
+        fig.write_html("images/random_portfolios.html")
 
         self.weights = np.array(weights)
         self.portfolio_data = portfolio_data
@@ -262,7 +272,7 @@ class StockSelection:
             coloraxis_colorbar=dict(title="Sharpe Ratio"),
             showlegend=True,
         )
-
+        fig.write_html("images/efficient_portfolio.html")
         fig.show()
 
 
@@ -272,6 +282,7 @@ if __name__ == "__main__":
     END_TIME = datetime.now()
     START_TIME = END_TIME - timedelta(365 * 10)  # We take data of 10 years
     data = pd.read_csv(path)
+    # sample_stocks = ["AAPL", "AMZN", "MSFT", "JPM", "DB", "NVDA"]
     stocks = data["indices"][1:].tolist()
     portfolio = StockSelection(tickers=stocks, start_date=START_TIME, end_date=END_TIME)
     portfolio.display_and_print_portfolio()
