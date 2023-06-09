@@ -112,8 +112,8 @@ class StockSelection:
             0.7 * stock_data["sharpe ratio"] + 0.3 * stock_data["sortino ratio"]
         )
         stock_data.sort_values(by=["kpi"], ascending=False, inplace=True)
-        self.portfolio_data = stock_data[0:15]
-        return stock_data[0:15]
+        self.portfolio_data = stock_data[0:10]
+        return stock_data[0:10]
 
     def plot_returns(self) -> pd.DataFrame:
         """
@@ -235,8 +235,8 @@ class StockSelection:
         result = {}
         for stock, optimum_weight in zip(self.top_stocks["ticker"], optimal):
             result[stock] = optimum_weight
-
         print(self.display_statistics(optimal))
+        print(result)
         fig = px.scatter(
             data_frame=portfolio_data,
             x="risk",
