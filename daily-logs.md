@@ -1,4 +1,9 @@
 # Daily logs to record the progress
+
+### 10th and 11th June
+Personal break, read 
+1. Aleph by Paulo Coelho
+2. Started reading the last book of the Clifton Chronicles.
 ### 8th June and 9th June
 1. Finished reading:
    - Intelligent Fusion Model(Padhi et al.)
