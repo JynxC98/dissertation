@@ -276,8 +276,10 @@ class StockSelection:
         fig.show()
 
 
-if __name__ == "__main__":
-    # Adding file path for the stock data
+def run_script():
+    """
+    Script to run the file
+    """
     path = r"~/dissertation/datasets/required_stocks.csv"
     END_TIME = datetime.now()
     START_TIME = END_TIME - timedelta(365 * 10)  # We take data of 10 years
@@ -286,3 +288,7 @@ if __name__ == "__main__":
     stocks = data["indices"][1:].tolist()
     portfolio = StockSelection(tickers=stocks, start_date=START_TIME, end_date=END_TIME)
     portfolio.display_and_print_portfolio()
+
+
+if __name__ == "__main__":
+    run_script()
