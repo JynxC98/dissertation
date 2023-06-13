@@ -2,8 +2,9 @@
 These are the helper functions which would assist 
 the `StockSelection` and `Portfolio` classes
 """
-from typing import List
+from typing import List, Type
 import numpy as np
+import pandas as pd
 
 NUM_TRADING_DAYS = 252
 RISK_FREE_RATE = 0.07 / 252
@@ -13,7 +14,7 @@ RISK_FREE_RATE = 0.07 / 252
 def calculate_sharpe_and_sortino_ratio(
     returns: np.array, risk_free_rate=RISK_FREE_RATE
 ) -> List:
-    """
+    r"""
     Function used to calculate the Sharpe and Sortino Ratio for the stocks. \\
     Sharpe ratio is given as (E[X] - rf)/std(excess returns) \\
     Sortino ratio is given as (E[X] - rf)/ std(negative asset returns)
@@ -79,3 +80,59 @@ def statistics(weights, returns, risk_free_rate=RISK_FREE_RATE, n_days=252) -> n
             (portfolio_return - risk_free_rate * n_days) / portfolio_volatility,
         ]
     )
+
+
+class VaRMonteCarlo:
+    r"""
+    VaR(Value at Risk) is a statistic that quantifies the extent of the financial \
+    losses of a given portfolio. 
+    More about VaR: https://www.investopedia.com/terms/v/var.asp
+
+    Input Parameters
+    ----------------
+    investment: The amount invested in the portfolio
+    returns: Mean return of the portfolio
+    sigma: Standard deviation of the portfolio
+    conf_int: Confidence interval
+    n_days: Number of days for which the VaR has to be calculated.
+
+    Returns
+    -------
+    Value at Risk for the given portfolio. \
+    Here is the formula for the VaR for multiple stocks: \ 
+    https://financetrain.com/value-at-risk-of-a-portfolio
+    """
+
+    NUM_ITERATIONS = 10000
+
+    def __init__(
+        self,
+        investment: Type[int],
+        returns: Type[pd.DataFrame],
+        sigma: Type[float],
+        conf_int: Type[float],
+        n_days: Type[int],
+    ):
+        """
+        Initialisation of `VaRMonteCarlo`
+        """
+        self.investment = investment
+        self.returns = returns
+        self.sigma = sigma
+        self.conf_int = conf_int
+        self.n_days = n_days
+
+    def simulation(self):
+        """
+        Uses Monte Carlo simulation for calculating VaR
+        """
+        rand = np.random.normal(0, 1, [1, self.NUM_ITERATIONS])
+
+        stock_price = self.investment * np.exp(
+            self.n_days * (self.returns - 0.5 * pow(self.sigma, 2))
+            + self.sigma * np.sqrt(self.n_days) * rand
+        )
+
+        percentile = np.percentile(stock_price, (1 - self.conf_int) * 100)
+
+        return self.investment - percentile

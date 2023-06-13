@@ -2,7 +2,7 @@
 Script that would select the stocks which would outperform the market returns.
 We will be using the NIFTY 50 index for our stock selection.
 """
-from typing import List
+from typing import List, Type
 from datetime import datetime, timedelta
 import os
 from collections import defaultdict
@@ -50,7 +50,13 @@ class StockSelection:
         500000  # Number of random portfolios used to generate Efficient Frontier
     )
 
-    def __init__(self, tickers: List, start_date: datetime, end_date: datetime) -> None:
+    def __init__(
+        self,
+        tickers: List,
+        start_date: datetime,
+        end_date: datetime,
+        investment: Type[int],
+    ) -> None:
         """
         Initialisation function of the `StockSelection` class.
 
@@ -59,6 +65,7 @@ class StockSelection:
         self.tickers = tickers
         self.start_date = start_date
         self.end_date = end_date
+        self.investment = investment
 
         # These parameters will be stored after calculation
         self.portfolio_data = None
