@@ -1,5 +1,13 @@
 # Daily logs to record the progress
-
+## 12th June and 13th June
+1. Wrote the code for VaR for single stock returns.
+2. Finished reading
+   - Building portfolios based on machine learning
+predictions.
+   - Portfolio Generation for Indian Stock Markets
+using Unsupervised Machine Learning.
+   - Mean–variance portfolio optimization using machine learning-based
+stock price prediction.
 ### 10th and 11th June
 Personal break, read 
 1. Aleph by Paulo Coelho
