@@ -82,25 +82,22 @@ def statistics(weights, returns, risk_free_rate=RISK_FREE_RATE, n_days=252) -> n
     )
 
 
-class VaRMonteCarlo:
-    r"""
-    VaR(Value at Risk) is a statistic that quantifies the extent of the financial \
-    losses of a given portfolio. 
-    More about VaR: https://www.investopedia.com/terms/v/var.asp
+class VaRMonteCarloMulti:
+    """
+    VaR(Value at Risk) for multiple stocks using Monte Carlo simulation.
 
-    Input Parameters
-    ----------------
-    investment: The amount invested in the portfolio
-    returns: Mean return of the portfolio
-    sigma: Standard deviation of the portfolio
-    conf_int: Confidence interval
+    Parameters
+    ----------
+    investment: The total amount invested in the portfolio.
+    weights: list of weights for each stock in the portfolio.
+    returns: list of mean returns for each stock.
+    sigma: list of standard deviations for each stock.
+    conf_int: Confidence interval.
     n_days: Number of days for which the VaR has to be calculated.
 
     Returns
     -------
-    Value at Risk for the given portfolio. \
-    Here is the formula for the VaR for multiple stocks: \ 
-    https://financetrain.com/value-at-risk-of-a-portfolio
+    Value at Risk for the given portfolio.
     """
 
     NUM_ITERATIONS = 10000
@@ -108,17 +105,16 @@ class VaRMonteCarlo:
     def __init__(
         self,
         investment: Type[int],
-        returns: Type[pd.DataFrame],
-        sigma: Type[float],
+        weights: Type[List[float]],
+        returns: Type[List[float]],
+        sigma: Type[List[float]],
         conf_int: Type[float],
         n_days: Type[int],
     ):
-        """
-        Initialisation of `VaRMonteCarlo`
-        """
         self.investment = investment
-        self.returns = returns
-        self.sigma = sigma
+        self.weights = np.array(weights)
+        self.returns = np.array(returns)
+        self.sigma = np.array(sigma)
         self.conf_int = conf_int
         self.n_days = n_days
 
@@ -126,13 +122,18 @@ class VaRMonteCarlo:
         """
         Uses Monte Carlo simulation for calculating VaR
         """
-        rand = np.random.normal(0, 1, [1, self.NUM_ITERATIONS])
+        rand = np.random.normal(0, 1, [len(self.returns), self.NUM_ITERATIONS])
 
-        stock_price = self.investment * np.exp(
+        # Compute the investment in each stock, based on its weight
+        individual_investment = self.investment * self.weights
+
+        stock_price = individual_investment * np.exp(
             self.n_days * (self.returns - 0.5 * pow(self.sigma, 2))
             + self.sigma * np.sqrt(self.n_days) * rand
         )
 
-        percentile = np.percentile(stock_price, (1 - self.conf_int) * 100)
+        portfolio_price = np.sum(stock_price, axis=0)
+
+        percentile = np.percentile(portfolio_price, (1 - self.conf_int) * 100)
 
         return self.investment - percentile
