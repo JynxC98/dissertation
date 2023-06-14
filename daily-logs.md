@@ -1,4 +1,7 @@
 # Daily logs to record the progress
+# 14th June
+1. Modified the VaR code for multiple stock returns.
+2. Completed the lecture on backtesting on Udemy
 ## 12th June and 13th June
 1. Wrote the code for VaR for single stock returns.
 2. Finished reading
