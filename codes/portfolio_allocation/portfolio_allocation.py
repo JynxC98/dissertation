@@ -19,6 +19,7 @@ from helper_functions import (
     calculate_sharpe_and_sortino_ratio,
     minimise_function,
     statistics,
+    # VaRMonteCarloMulti, # Used to calculate the VaR for the asset classes.
 )
 
 NUM_TRADING_DAYS = 252  # Assumption
@@ -52,9 +53,9 @@ class StockSelection:
 
     def __init__(
         self,
-        tickers: List,
-        start_date: datetime,
-        end_date: datetime,
+        tickers: Type[List[str]],
+        start_date: Type[datetime],
+        end_date: Type[datetime],
         investment: Type[int],
     ) -> None:
         """
