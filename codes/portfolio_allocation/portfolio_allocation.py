@@ -30,21 +30,40 @@ RISK_FREE_RATE = (
 
 
 class StockSelection:
-    """
-    - Class used to select the top 15 best performing stocks based on the market
-    excess return.
-    - Only stocks with a positive excess return and a Sharpe ratio greater than 1
-    are considered as outperforming the market.
-    - We will be using yahoo finance api to gather the historical data.
-    More about the yahoo finance api:  https://algotrading101.com/learn/yahoo-finance-api-guide/
+    r"""
+    Script for Portfolio Optimization and Stock Selection.
 
-    Input Parameters
-    ----------------
-    tickers: The list of tickers for which the historical data is required.
-    Note that the tickers list must have the market index included.
-    start_date: The start of the historical data.
-    end_date: The end of the historical data.
+    The script uses historical data fetched via the Yahoo Finance API for a list of
+    stocks. The Sharpe and Sortino ratios are calculated for each stock and used as
+    criteria to select top performing stocks. A portfolio is then constructed using
+    random weights and portfolio performance is evaluated using expected return and
+    risk (volatility). The portfolio is optimized for maximal Sharpe Ratio using the
+    SLSQP (Sequential Least Squares Programming) method.
 
+    Classes:
+    --------
+    `StockSelection`: A class that handles fetching of data, calculation of returns,
+    selection of top stocks, and generation and optimization of portfolios.
+
+    Methods:
+    --------
+    `__init__`: Initialize the StockSelection object. \
+    `get_data_from_yahoo`: Fetch historical data from Yahoo Finance. \
+    `calculate_returns`: Calculate daily returns for the fetched data. \
+    `return_top_stocks`: Select top performing stocks based on Sharpe and Sortino ratios. \
+    `plot_returns`: Plot cumulative returns of the top stocks. \
+    `generate_portfolios`: Generate random portfolios and analyze portfolio performance. \
+    `optimize_portfolio`: Optimize portfolio for maximal Sharpe ratio. \
+    `display_statistics`: Display expected return, volatility, and Sharpe ratio for given portfolio weights. \
+    `display_and_print_portfolio`: Generate and display the optimal portfolio on the efficient frontier. 
+
+    Functions:
+    ----------
+    run_script(): Defines the list of tickers, start and end dates, and runs the portfolio optimization.
+
+    Modules Required:
+    -----------------
+    datetime, collections, numpy, pandas, plotly, alive_progress, scipy.optimize, yfinance, helper_functions
     """
 
     NUM_PORTFOLIO = (
@@ -60,6 +79,13 @@ class StockSelection:
     ) -> None:
         """
         Initialisation function of the `StockSelection` class.
+
+        Input Parameters
+        ----------------
+        tickers: The list of tickers for which the historical data is required.
+        Note that the tickers list must have the market index included.
+        start_date: The start of the historical data.
+        end_date: The end of the historical data.
 
         Note, the tickers must have the market index present
         """
