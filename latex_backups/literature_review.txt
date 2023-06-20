@@ -1,0 +1,60 @@
+\addcontentsline{toc}{chapter}{Literature review}
+\chapter*{\hfill \huge{Literature Review}}
+\addcontentsline{toc}{section}{Risk}
+\section*{\large{Risk}}
+One of the main aims of any investor is to minimize risks associated with their investments. Systematic risk and unsystematic risk are the two main types of risk that investors face when investing in the financial markets. The main aim of investors, as it relates to these risks, can be generally summarized as follows:
+\begin{enumerate}
+    \item \textbf{Systematic Risk}: Systematic risk refers to the overall undiversifiable market risk. It includes inflation, political instability, war, economic changes etc. Investors aim to manage this risk by choosing the best asset allocation, robust hedging strategies and making informed decisions based on the macroeconomic factors/indicators (\cite{jameschensystrisk}).
+    \item \textbf{Unsystematic risk}: Unsystematic risk, also known as nonsystematic risk, refers to the risk associated with a specific company or an industry. In the context of a portfolio, unsystematic risk can be reduced by diversification of capital across several asset classes(\cite{jameschenunsystrisk}). 
+\end{enumerate}
+\addcontentsline{toc}{section}{Diversification and Optimisation}
+\section*{\large{Diversification and Optimisation}}
+Diversification is a fundamental concept in asset management to manage unsystematic risk. A diversified portfolio comprises a mix of different asset classes to reduce the exposure to a single security (\cite{troysegaldiversification}). Diversification is a crucial factor for portfolio optimisation. Portfolio optimisation can be defined as selecting the best possible weights for a basket of assets, with a predefined set of objectives, which include return maximisation, risk-minimisation, increasing risk-reward ratio etc (\cite{dariusoh2022mlopt}). The first formal definition of an optimal portfolio was given by \cite{10.2307/2975974}.
+The model suggests that an optimal portfolio maximises the expected return for a given variance. \\\\
+% Let $\rho_{i,j}$ be the correlation between assets $i$ and $j$ for $i \neq j$. Let $\mu = \left[\mu_1, \mu_2, \dots \mu_n\right]^T$ and $\Sigma$ be the $n \times n$ covariance matrix where $\sigma_{i,j} = \rho_{i,j} \sigma_i \sigma_j$.
+Let $S= \{s_i \mid i \in \mathrm{W}, 1 \leq i \leq n\}$, where $s_i$ is the value of $i^{th}$ stock. Let $w = \{w_i \mid i \in \mathrm{R^+}\}$, where $w_i$ is the percentage of total capital allocated for the stock $i$, and $\sum_{i=1}^N w_i= 1$. $S$ maps $W$ in a one-to-one fashion, $S:W \rightarrow S$. Let $\mu$ and $\sigma$ denote the expected return and the standard deviation of stock $S$ respectively. Let $R_i$ be the return of the stock $i$. Therefore, the portfolio value is given by\footnote{These equations have been referenced from the book 'Paul Wilmott Introduces Quantitative Finance by \cite{10.5555/1370958}.}
+\begin{align}
+    \label{eq:portfolio_value}
+    V = \sum_{i=0}^N w_i S_i  
+\end{align}
+After the end of the time horizon, the value of the portfolio becomes
+\begin{align}
+    \label{eq:portfolio_value_end}
+    V + \delta V = \sum_{i=0}^N w_i(1 + R_i)     
+\end{align}
+We can write the change in the portfolio value as 
+\begin{align}
+    \label{eq:portfolio_change}
+    \frac{\delta V}{V} = \sum_{i=1}^N W_i R_i 
+\end{align}
+where,
+\begin{align}
+    \label{eq:updated_weights}
+    W_i = \frac{w_i S_i}{\sum_{i=1}^N w_i S_i}
+\end{align}
+From Equation 4, we can calculate the expected return of the given portfolio
+\begin{align}
+    \label{eq:expected_return}
+    \mu_{V} = \sum_{i=1}^N W_i R_i
+\end{align}
+and the variance of the return is given by
+\begin{align}
+    \label{eq:variance_portfolio}
+    \sigma_{V}^2 = \sum_{i=1}^N \sum_{j=1}^N W_i W_j \rho_{ij} \sigma_i \sigma_j
+\end{align}
+Hence, an investor's optimisation problem can be written as
+\begin{align*}
+ & \phantom{aaa} \max_{\mathbf{w}} \quad \mathbf{w}^T \mathbf{\mu_V} \\
+\text{subject to} & \phantom{aaa} \mathbf{w}^T \Sigma \mathbf{w} \leq \sigma^2_{\text{target}}, \\
+                   & \phantom{aaa} \mathbf{w}^T \mathbf{1} = 1, \\
+                   & \phantom{aaa} \mathbf{w} \geq 0, \\
+\text{where}       & \phantom{aaa} \Sigma = \text{Covariance matrix of the assets}.
+\end{align*}
+The equations mentioned above form the foundation of the Modern Portfolio Theory(MPT), where an investor's problem is to find the portfolio that maximises their expected utility(\cite{10.2307/2975974}). While the mean-variance model has been instrumental in portfolio management, here are a few limitations that necessitate advanced models:
+\begin{enumerate}
+    \item \textbf{Assumption of normal distribution}: MPT follows an assumption that the returns of a particular asset are normally distributed. However, real-life financial data can be skewed and have fat tails (leptokurtic). This drawback can lead to an underestimation of portfolio risk as the model is sensitive to the extreme values of expected returns and variance (\cite{roberto/1331677X.2021.1981963}).
+    \item \textbf{Reliance on Historical Data}: MPT relies on historical data to evaluate expected returns and volatility. This assumption may not hold in the event of an economic shock or unpredictable market conditions. According to the research conducted by \cite{mptlimit1}, MPT's reliance on historical data may result in an incorrect estimation of expected returns, leading to subpar portfolio allocations.
+    \item \textbf{Assumption of static correlations}: MPT assumes that the asset returns follow a normal distribution and that the correlations between assets remain constant over time. \cite{9400} argue that MPT's assumptions of normality and constant correlations can lead to a subpar portfolio performance during the event of uncertain market conditions.    
+\end{enumerate}
+The challenges faced by MPT can be addressed by using machine learning algorithms. Machine learning has gradually been introduced into the finance field, showing great promise in several areas, from portfolio optimization and risk management to algorithmic trading.
+Several research studies have been conducted in the field of portfolio management, where machine learning algorithms have shown the ability to outperform traditional mean-variance optimization methods. \cite{CHEN2021106943} used a hybrid model of XGBoost (\cite{Chen_2016}) and firefly algorithm (\cite{YANG_2}) to predict the stock returns, after which the traditional mean-variance model is employed for the portfolio selection. Another study done by \cite{Zhang_2020} presented a methodology where they utilised deep learning models to optimise the portfolio's Sharpe Ratio(\cite{sharpe1964capital}). \cite{portfolio_construction} investigated the use of random forest classifier (\cite{random_forest} to predict the direction of the stock return, after which they used GARCH(\cite{bollerslev1986generalized}) to forecast the stock returns. \\\\

@@ -1,0 +1,19 @@
+\addcontentsline{toc}{chapter}{Appendix}
+\chapter*{\huge{\hfill Appendix}}
+\addcontentsline{toc}{section}{Codes}
+\section*{\large{Summary}}
+The given Python script is a tool for selecting and managing a portfolio of stocks in order to optimize performance. It fetches historical data from \href{https://python-yahoofinance.readthedocs.io/en/latest/api.html}{Yahoo Finance API} for the set of stocks and calculates key financial metrics to assess their performance. \\\\
+Here's a brief summary of the key components and functionality of the code:
+\begin{enumerate}
+    \item \textbf{Risk-Free Rate}: The risk-free rate used in the calculation of the Sharpe and Sortino ratios. This rate is the return that could be achieved with a risk-free investment (like government bonds). The data is acquired from \href{http://www.worldgovernmentbonds.com/bond-historical-data/india/30-year/}{World Government Bonds}.
+    \item \textbf{Fetching and Analyzing Stock Data}: The script acquires the historical data for a given set of tickers, defined by the `run\textunderscore script` function, using the Yahoo Finance API.
+    \item \textbf{Stock Selection}: Based on the returns, the script ranks the stocks based on the weighted average of the Sharpe and Sortino Ratios. It selects the top 15 stocks based on the measures above.
+    \item \textbf{Generation and Optimisation of Portfolios}: The script then generates a large number of random portfolios, then optimizes these portfolios with the objective to maximise the Sharpe Ratio using the Sequential Least Squares Programming \href{https://qiskit.org/documentation/stubs/qiskit.algorithms.optimizers.SLSQP.html}{(SLSPQ)}.
+    \item \textbf{Data Visualisation}: The script visualises the portfolio performance based on the overall Sharpe ratio using \href{https://plotly.com/python/}{Plotly}. This includes the plots of:
+    \begin{enumerate}
+        \item Cumulative returns
+        \item Scatter plot of the generated portfolios with the efficient frontier (where the expected return is maximized for a given level of risk).
+    \end{enumerate}
+    \item \textbf{Helper Functions}: Several key calculations are performed using helper functions imported from a separate module, such as `calculate\_sharpe\_and\_sortino\_ratio` and `minimise\_function`.
+    
+\end{enumerate}

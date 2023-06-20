@@ -1,0 +1,75 @@
+\addcontentsline{toc}{chapter}{Methodology}
+\chapter*{\hfill Methodology}
+\addcontentsline{toc}{section}{Data Acquisition and Preparation}
+\section*{\large{Data Acquisition and Preparation}}
+Here is the overall schematic of the stock selection process:
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[scale=0.7, every node/.style={scale=0.7}, node distance=2cm]
+\usetikzlibrary{shapes.geometric, arrows}
+\node (start) [rectangle, rounded corners, text centered, draw=black] {Start};
+\node (selectindex) [rectangle, text centered, draw=black, below of=start] {Select the Market Index};
+\node (selectstocks) [rectangle, text centered, draw=black, below of=selectindex] {Select the Pool of Stocks};
+\node (calculateKPI) [rectangle, text centered, draw=black, below of=selectstocks] {Calculate KPI};
+\node (decision) [diamond, aspect=2, text centered, draw=black, below of=calculateKPI] {KPI $>$ Threshold?};
+\node (feedmodel) [rectangle, text centered, draw=black, below of=decision, yshift=-1cm] {Feed Model to Optimizer};
+\node (results) [rectangle, rounded corners, text centered, draw=black, below of=feedmodel] {Generate Optimal Weights and Calculate Returns};
+
+\draw [->] (start) -- (selectindex);
+\draw [->] (selectindex) -- (selectstocks);
+\draw [->] (selectstocks) -- (calculateKPI);
+\draw [->] (calculateKPI) -- (decision);
+\draw [->] (decision) -- node [midway, right] {Yes} (feedmodel);
+\draw [->] (feedmodel) -- (results);
+\draw [->] (decision) -| node [midway, above] {No} ++(-3cm,0) |- (selectstocks);
+\end{tikzpicture}
+\caption{The initial stock selection process.}
+\end{figure} 
+\newline
+We will be using the data from \href{https://www.nseindia.com/}{NSE}, an Indian stock exchange. The National Stock Exchange is one of the distinguished stock exchanges in India and plays a crucial role in the Indian financial market. Established in 1992, the NSE has emerged as a leading platform for the trade of several financial instruments, including derivatives, equities, currencies, debt securities etc. As of 19th June 2023, NSE had over 1,600 actively traded stocks listed on its platform. These stocks represent various sectors and industries, providing investors with a wide range of investment opportunities. We will be using \href{https://www.nseindia.com/market-data/live-equity-market}{NIFTY 50} for our study. \\\\
+This study employs the usage of \href{https://algotrading101.com/learn/yahoo-finance-api-guide/}{Yahoo Finance API} to gather the data from the NIFTY 50 index. The historical data of 10 years is utilised to feed into Markowitz's mean-variance model. The historical returns are utilised to rank the stocks on the basis of the weighted average of Sharpe (\cite{sharpe1964capital}) and Sortino (\cite{sortino1994downside}) ratios, with more weight assigned to the former. The KPI used to evaluate stock performance:
+\begin{align}
+    \label{eq:KPI}
+    \text{KPI} = 0.7\times \text{Sharpe Ratio} + 0.3\times \text{Sortino Ratio}
+\end{align}
+The study examines the usage of the given KPI to generate the top 10 stocks based on historical returns of the stocks. The threshold of the stock selection is the 60th percentile of the KPI scores.
+\addcontentsline{toc}{section}{Key findings and figures}
+\section*{\large{Key findings and figures}}
+After evaluating the stocks based on the KPI mentioned above, here are the top 10 stocks for the NIFTY 50 index along with their cumulative growth based on the historical data of 10 years.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{Methodology/Screenshot 2023-06-20 at 12.29.40 am.png}
+    \caption{Cumulative returns in the span of 10 years.}
+    \label{fig:image}
+\end{figure}
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|c|}
+    \hline
+    \textbf{Stock Name} & \textbf{Ticker} & \textbf{KPI value} & \textbf{Cumulative Growth} \\
+    \hline
+    Adani Enterprise & ADANIENT.NS & 1.34 & 29.04 \\
+    \hline
+
+    \end{tabular}
+    \caption{Top 10 stocks based on KPI}
+    \label{tab:my_label}
+\end{table}
+
+
+% \begin{table}[h]
+% \centering
+% \begin{tabular}{|c|c|c|}
+% \hline
+% \textbf{Column 1} & \textbf{Column 2} & \textbf{Column 3} \\
+% \hline
+% Value 1 & Value 2 & Value 3 \\
+% \hline
+% Value 4 & Value 5 & Value 6 \\
+% \hline
+% \end{tabular}
+% \caption{Your table caption}
+% \label{tab:my_label}
+% \end{table}
+
+

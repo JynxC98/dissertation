@@ -1,0 +1,281 @@
+% Markowitz Portfolio Theory
+@article{10.2307/2975974,
+ ISSN = {00221082, 15406261},
+ URL = {http://www.jstor.org/stable/2975974},
+ author = {Harry Markowitz},
+ journal = {The Journal of Finance},
+ number = {1},
+ pages = {77--91},
+ publisher = {[American Finance Association, Wiley]},
+ title = {Portfolio Selection},
+ urldate = {2023-03-29},
+ volume = {7},
+ year = {1952}
+}
+% Sortino Ratio
+@article{sortino1994downside,
+  title={Downside risk},
+  author="{Sortino et al}",
+  journal={The Journal of Portfolio Management},
+  volume={21},
+  number={1},
+  pages={27--31},
+  year={1994},
+  publisher={AIMR (CFA Institute)}
+}
+
+% Brinson portfolio performance
+@article{brinson1986determinants,
+  title={Determinants of Portfolio Performance},
+  author={Brinson, Gary P. and Hood, L. Randolph and Beebower, Gilbert L.},
+  journal={Financial Analysts Journal},
+  volume={42},
+  number={4},
+  pages={39--44},
+  year={1986},
+}
+% William Sharpe financial paper
+@article{sharpe1964capital,
+  title={Capital Asset Prices: A Theory of Market Equilibrium under Conditions of Risk},
+  author={Sharpe, William F.},
+  journal={The Journal of Finance},
+  volume={19},
+  number={3},
+  pages={425--442},
+  year={1964},
+  publisher={Wiley}
+}
+% The science of algorithmic trading and portfolio management
+@incollection{algorithmic_trading,
+title = {The Science of Algorithmic Trading and Portfolio Management},
+author = {Robert Kissell},
+publisher = {Academic Press},
+address = {San Diego},
+year = {2014},
+isbn = {978-0-12-401689-7},
+doi = {https://doi.org/10.1016/B978-0-12-401689-7.00015-5},
+url = {https://www.sciencedirect.com/science/article/pii/B9780124016897000155}
+}
+% Investopedia options
+@misc{options,
+  author = {James Chen},
+  title = {What are Options? Types, Spreads, examples and risk metrics},
+  year = {2023},
+  howpublished = {\url{https://www.investopedia.com/terms/o/option.asp}},
+  note = {[Online; accessed 15-June-2023]}
+}
+% Options, Futures, and other Derivatives
+@book{hull2018options,
+  title={Options, Futures, and Other Derivatives},
+  author={Hull, John C.},
+  year={2018},
+  edition={10th},
+  publisher={Pearson}
+}
+% Options as stragegic investments
+@book{mcmillan2012options,
+  title={Options as a Strategic Investment},
+  author={McMillan, Lawrence G.},
+  year={2012},
+  edition={5th},
+  publisher={Prentice Hall}
+}
+
+% Expected Shortfall wikipedia page
+@misc{enwiki:1159889114,
+author = "{Wikipedia}",
+title = "Expected shortfall --- {Wikipedia}{,} The Free Encyclopedia",
+year = "2023",
+url = "https://en.wikipedia.org/w/index.php?title=Expected_shortfall&oldid=1159889114",
+note = "[Online; accessed 19-June-2023]"
+}
+
+% James Chen unsystematic risk
+@misc{jameschenunsystrisk,
+  author = "{James Chen}",
+  title = {What Is Unsystematic Risk? Types and Measurements Explained},
+  year = {2023},
+  howpublished = {\url{https://www.investopedia.com/terms/u/unsystematicrisk.asp}},
+  note = {[Online; accessed 05-June-2023]}
+}
+
+% James Chen systematic risk
+@misc{jameschensystrisk,
+  author = "{James Chen}",
+  title = {Systematic Risk: Definition and Examples},
+  year = {2023},
+  howpublished = {\url{https://www.investopedia.com/terms/s/systematicrisk.asp}},
+  note = {[Online; accessed 05-June-2023]}
+}
+
+% Paul Willmott on Quantitative Finance
+@book{10.5555/1370958,
+author = "{Paul Wilmott}",
+title = {Paul Wilmott Introduces Quantitative Finance},
+year = {2007},
+isbn = {0470319585},
+publisher = {Wiley-Interscience},
+address = {USA},
+edition = {2},
+abstract = {Paul Wilmott Introduces Quantitative Finance, Second Edition is an accessible introduction to the classical side of quantitative finance specifically for university students. Adapted from the comprehensive, even epic, works Derivatives and Paul Wilmott on Quantitative Finance, Second Edition, it includes carefully selected chapters to give the student a thorough understanding of futures, options and numerical methods. Software is included to help visualize the most important ideas and to show how techniques are implemented in practice. There are comprehensive end-of-chapter exercises to test students on their understanding.}
+}
+% Troy segal on diversification
+@misc{troysegaldiversification,
+  author = {Troy Segal},
+  title = {What Is Diversification? Definition as Investing Strategy},
+  year = {2023},
+  howpublished = {\url{https://www.investopedia.com/terms/d/diversification.asp}},
+  note = {[Online; accessed 05-June-2023]}
+}
+% ML based portfolio optimisation
+
+@misc{dariusoh2022mlopt,
+  author = "{Darius Oh et al}",
+  title = {ML Optimisation for Portfolio Allocation},
+  year = {2022},
+  howpublished = {\url{https://medium.com/@nusfintech.ml/ml-optimisation-for-portfolio-allocation-9da34e7fe6b1}},
+  note = {[Online; accessed 03-June-2023]}
+}
+% Improving the volatility of the optimal weights
+@article{roberto/1331677X.2021.1981963,
+author = "{Ortiz et al.}",
+title = {Improving the volatility of the optimal weights of the Markowitz model},
+journal = {Economic Research-Ekonomska Istraživanja},
+volume = {35},
+number = {1},
+pages = {2836-2858},
+year  = {2022},
+publisher = {Routledge},
+doi = {10.1080/1331677X.2021.1981963},
+URL = { 
+        https://doi.org/10.1080/1331677X.2021.1981963
+},
+eprint = { 
+        https://doi.org/10.1080/1331677X.2021.1981963
+}
+}
+% Limitations of MPT
+@article{mptlimit1,
+ ISSN = {00251909, 15265501},
+ URL = {http://www.jstor.org/stable/2632458},
+ abstract = {The purpose of this paper is to demonstrate that a portfolio optimization model using the L$_1$ risk (mean absolute deviation risk) function can remove most of the difficulties associated with the classical Markowitz's model while maintaining its advantages over equilibrium models. In particular, the L$_1$ risk model leads to a linear program instead of a quadratic program, so that a large-scale optimization problem consisting of more than 1,000 stocks may be solved on a real time basis. Numerical experiments using the historical data of NIKKEI 225 stocks show that the L$_1$ risk model generates a portfolio quite similar to that of the Markowitz's model within a fraction of time required to solve the latter.},
+ author = {Hiroshi Konno and Hiroaki Yamazaki},
+ journal = {Management Science},
+ number = {5},
+ pages = {519--531},
+ publisher = {INFORMS},
+ title = {Mean-Absolute Deviation Portfolio Optimization Model and Its Applications to Tokyo Stock Market},
+ urldate = {2023-06-16},
+ volume = {37},
+ year = {1991}
+}
+% The econometrics of Financial Markets
+@book {9400,
+    author = "{Campbell et al.}",
+	title = {The Econometrics of Financial Markets},
+	year = {1997},
+	publisher = {Princeton University Press},
+	organization = {Princeton University Press},
+	address = {Princeton, NJ},
+	url = {https://press.princeton.edu/books/hardcover/9780691043012/the-econometrics-of-financial-markets}
+}
+% Mean-variance portfolio optimisation using ML-based stock price prediction
+@article{CHEN2021106943,
+    author = "{Wei Chen et al.}",
+    title = {Mean–variance portfolio optimization using machine learning-based stock price prediction},
+    journal = {Applied Soft Computing},
+    volume = {100},
+    pages = {106943},
+    year = {2021},
+    issn = {1568-4946},
+    doi = {https://doi.org/10.1016/j.asoc.2020.106943}
+}
+
+% XGBoost
+@inproceedings{Chen_2016,
+	doi = {10.1145/2939672.2939785},
+  
+	url = {https://www.kdd.org/kdd2016/papers/files/rfp0697-chenAemb.pdf},
+  
+	year = 2016,
+	month = {aug},
+  
+	publisher = {{ACM}
+},
+  
+	author = "{Tianqi Chen and Carlos Guestrin}",
+  
+	title = {{XGBoost}},
+  
+	booktitle = {Proceedings of the 22nd {ACM} {SIGKDD} International Conference on Knowledge Discovery and Data Mining}
+}
+%Firefly algorithm
+@article{YANG_2,
+    title = {Chapter 9 - Firefly Algorithms},
+    author = "{Xin-She Yang}",
+    booktitle = {Nature-Inspired Optimization Algorithms (Second Edition)},
+    pages = {123-139},
+    year = {2021},
+    isbn = {978-0-12-821986-7},
+    doi = {10.1016/B978-0-12-821986-7.00016-0},
+    url = {https://www.sciencedirect.com/science/article/pii/B9780128219867000160},
+    keywords = {Algorithm, attraction, diffusion, firefly algorithm, nonlinear system, optimization, swarm intelligence}
+}
+%DL for portfolio Optimisation
+@article{Zhang_2020,
+  doi = {10.3905/jfds.2020.1.042},
+  url = {https://doi.org/10.3905/jfds.2020.1.042},
+  year = 2020,
+  month = aug,
+  publisher = {Pageant Media {US}},
+  volume = 2,
+  number = 4,
+  pages = {8--20},
+  author = {Zihao Zhang and Stefan Zohren and Stephen Roberts},
+  title = {Deep Learning for Portfolio Optimization},
+  journal = {The Journal of Financial Data Science}
+}
+
+
+% Previous dissertation
+@article{portfolio_construction,
+author = {Ghali Tadlaoui},
+title = {Intelligent Portfolio Construction:
+Machine-Learning enabled Mean-Variance
+Optimization},
+year = {2018},
+institution = {Imperial College London},
+}
+% Random Forest 
+@article{random_forest,
+author = {Matthias Schonlau and Rosie Yuyan Zou},
+title ={The random forest algorithm for statistical learning},
+journal = {The Stata Journal},
+volume = {20},
+number = {1},
+pages = {3-29},
+year = {2020},
+doi = {10.1177/1536867X20909688},
+
+URL = { 
+        https://doi.org/10.1177/1536867X20909688
+    
+},
+eprint = { 
+        https://doi.org/10.1177/1536867X20909688
+    
+}
+,
+    abstract = { Random forests (Breiman, 2001, Machine Learning 45: 5–32) is a statistical- or machine-learning algorithm for prediction. In this article, we introduce a corresponding new command, rforest. We overview the random forest algorithm and illustrate its use with two examples: The first example is a classification problem that predicts whether a credit card holder will default on his or her debt. The second example is a regression problem that predicts the logscaled number of shares of online news articles. We conclude with a discussion that summarizes key points demonstrated in the examples. }
+}
+%GARCH
+@article{bollerslev1986generalized,
+  title={Generalized autoregressive conditional heteroskedasticity},
+  author="{Bollerslev, Tim}",
+  journal={Journal of econometrics},
+  volume={31},
+  number={3},
+  pages={307--327},
+  year={1986},
+  publisher={Elsevier}
+}

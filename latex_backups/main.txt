@@ -1,0 +1,69 @@
+\documentclass[a4paper, 12pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{sectsty}
+\sectionfont{\fontsize{12}{15}\selectfont}
+\usepackage[margin=0.6in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+% \graphicspath{{images/}}
+\usepackage{ulem}
+\usepackage{natbib}
+\usepackage{pdfpages}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue,
+    filecolor=blue
+}
+\usepackage{tikz}
+\usepackage{pythonhighlight}
+
+\lstset{
+  frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{red},
+  stringstyle=\color{red},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+
+
+\begin{document}
+\input{initial_files/front_page}
+\tableofcontents
+\listoffigures
+% \newpage
+% \input{nomenclature}
+\newpage
+\input{introduction}
+\newpage
+\input{literature_review}
+\newpage
+\newpage
+\input{Methodology/methodology}
+\newpage
+\input{codes/summary_code}
+% \newpage
+% \input{codes/portfolio_allocation}
+% \newpage
+% \input{codes/helper_functions}
+
+\bibliographystyle{agsm}
+\bibliography{references}
+\end{document}

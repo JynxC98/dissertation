@@ -1,8 +1,27 @@
 # Daily logs to record the progress
-# 14th June
+### 19th June
+1. Completed half of the first draft
+2. Started reading articles on XGBoost
+### 18th June
+1. Finished reading 
+   - ML algorithms
+   - Worked on the first literature draft
+### 17th June
+1. Breakday
+### 16th June
+1. Started watching python tutorials [Socratica](https://www.youtube.com/watch?v=apACNr7DC_s&list=PLi01XoE8jYohWFPpC17Z-wWhPOSuh8Er-&index=23).
+2. Finished reading
+   - Lets see 
+### 15th June 
+1. Started writing the literature review of the dissertation(30% done)
+2. Started a course on inferential statistics and mathematics on Udemy
+3. Finished reading
+   - DL for machine learning.
+   - Machine Learning and Portfolio Optimization
+### 14th June
 1. Modified the VaR code for multiple stock returns.
 2. Completed the lecture on backtesting on Udemy
-## 12th June and 13th June
+### 12th June and 13th June
 1. Wrote the code for VaR for single stock returns.
 2. Finished reading
    - Building portfolios based on machine learning
