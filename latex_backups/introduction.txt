@@ -1,0 +1,43 @@
+\addcontentsline{toc}{chapter}{Introduction}
+\chapter*{\hfill \Huge{Introduction}}
+\addcontentsline{toc}{section}{Portfolio Construction}
+\section*{\Large{Portfolio construction}}
+A portfolio is a collection of financial assets held by an individual, institution, or investment fund. In the finance domain, a portfolio refers to the combination of various securities, such as stocks, bonds, options, and other investment instruments. The goal of creating a portfolio is to achieve a balance between risk and return by diversifying investments across different asset classes, sectors, and geographic regions. Portfolios are managed to maximize returns while minimizing risks to meet specific investment goals. \\\\
+According to \cite{10.2307/2975974}, a pioneer in portfolio theory, the concept of a portfolio revolves around the principles of diversification and asset allocation. Diversification involves spreading investments across different assets to reduce the impact of individual security or asset class volatility on the overall portfolio. It helps mitigate the unsystematic or company-specific risks that can be minimised through diversification. Asset allocation, on the other hand, focuses on determining the optimal mix of assets within a portfolio based on the investor's risk tolerance and investment objectives. Asset allocation involves evaluating the allocation percentages to various asset classes like stocks, bonds, and cash equivalents. Asset allocation plays a crucial role in determining the risk-return profile of a portfolio (\cite{brinson1986determinants}). The efficient frontier constitutes all the optimal portfolios. \\\\
+\cite{sharpe1964capital} further presented a view on the efficient frontier concept by providing investors with a medium to determine the most appropriate portfolio on the frontier. The technique used by \cite{sharpe1964capital} to determine the most efficient portfolio on the efficient frontier line is known as the Sharpe ratio. The Sharpe ratio is a measure of risk-adjusted return, calculated by dividing the portfolio's excess return(the portfolio return minus the risk-free rate) by the portfolio's standard deviation. \\\\
+The Sharpe ratio is given by 
+\begin{align}
+    \label{eq:Sharpe_ratio}
+    S_a = \frac{\mathrm{E} \left[R_a - R_f\right]}{\sigma_a}
+\end{align}
+where, \\
+$S_a$: Sharpe Ratio \\
+$R_a$: asset return \\
+$R_f$: risk free return \\
+$\sigma_a$: standard deviation of excess return \\\\
+The efficient frontier represents a set of portfolios that maximize returns for a given level of risk or minimize risk for a given level of return. The portfolio that lies on the efficient frontier and has the highest Sharpe ratio is considered the most efficient. It represents the optimal trade-off between risk and return. \\\\
+By analyzing different combinations of assets and their associated risk and return characteristics, Sharpe's methodology allows investors to construct portfolios that achieve the maximum return for a given level of risk or minimize risk for a desired level of return. This technique has been widely used in portfolio management and asset allocation strategies to guide investment decisions.
+
+\addcontentsline{toc}{section}{Inclusion of Options in Portfolio Construction}
+\section*{\Large{Inclusion of Options in Portfolio Construction}} 
+The term 'Option' refers to an instrument whose price is determined by the value of an underlying asset, such as stocks. An options contract offers the buyer the right to buy or sell, depending on the type of asset they hold, without any obligations to perform the trade. Each options contract has a specific strike price and an expiry date (\cite{options}). Options have proven to be instrumental in the financial industry, offering a plethora of strategies to manage risk and provide robust investment strategies. The ability to structure these contracts based on an investor's risk preferences has made options a valuable instrument for individual investors and corporations alike.
+
+\addcontentsline{toc}{subsection}{Types of Options}
+\subsection*{\large{Types of Options based on contract}}
+Options can be categorized into two types based on their contract:
+\begin{enumerate}
+    \item \textbf{Call Options}: A call option offers the holder a right, but not the obligation, to buy the underlying at the strike price on or before the expiry. 
+    \item \textbf{Put Options}: A put option, opposite to a call option, offers the holder to sell the underlying at the strike price on or before the expiration.
+\end{enumerate}
+
+\subsection*{\large{Types of Options based on exercise}}
+Options can be further classified into two types based on their exercise time\footnote{The distinction between the two options has no relevance to the geography.}:
+\begin{enumerate}
+    \item \textbf{American Options}: American options can be exercised any time between the purchase date and the expiration date. 
+    \item \textbf{European Options}: European options can only be exercised at the time of expiration. 
+\end{enumerate}
+Options can be valuable tools for portfolio management, allowing investors to enhance their strategies and hedge portfolio risks. By including options within a portfolio, investors can gain several advantages, including hedging against price fluctuations, generating income, enhancing returns through leverage, etc (\cite{hull2018options}). Options can act as insurance, protecting against adverse market movements and limiting downside risk (\cite{mcmillan2012options}). This study aims to explore the effectiveness of options as a hedging tool against the expected shortfall (ES).
+
+\addcontentsline{toc}{section}{Motivation of the study}
+\section*{\large{Motivation of the study}}
+Portfolio optimisation is crucial for investors who wish to achieve their financial goals while managing risk. Combining stocks and options can provide good returns and offer a good diversification benefit. However, optimising a portfolio comprising stocks and options requires advanced modelling techniques and several computational tools. Machine Learning (ML) techniques have opened up new avenues in the context of portfolio optimisation, by providing more adaptable and predictive power in complex, dynamic markets. By scrutinising vast quantities of financial data, ML models can identify intricate patterns and relationships, enabling more accurate prediction of returns and risks, hence increasing the effectiveness of the optimisation. Machine learning algorithms have shown a substantial potential to adapt to market changes while incorporating market data dynamically. The main aim of this dissertation is to investigate the use of XGBoost for portfolio optimisation.

@@ -1,4 +1,9 @@
 # Daily logs to record the progress
+### 20th June and 21st June
+1. Worked on the first draft of the dissertation
+2. Corrected the grammar and the consistency of the literature.
+3. Saw the videos of stat quest on XGBoost
+4. Completed reading the paper of XGBoost
 ### 19th June
 1. Completed half of the first draft
 2. Started reading articles on XGBoost
