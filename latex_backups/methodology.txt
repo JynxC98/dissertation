@@ -1,8 +1,20 @@
 \addcontentsline{toc}{chapter}{Methodology}
 \chapter*{\hfill Methodology}
-\addcontentsline{toc}{section}{Data Acquisition and Preparation}
-\section*{\large{Data Acquisition and Preparation}}
-Here is the overall schematic of the stock selection process:
+\addcontentsline{toc}{section}{Data Collection}
+\section*{\large{Data Collection}}
+\begin{enumerate}
+    \item \textbf{Data Source}: The historical data of 10 years for this dissertation was collected using the Yahoo Finance API(\href{https://python-yahoofinance.readthedocs.io/en/latest/api.html}{yfinance}), specifically version 0.2.18. This API allowed for the retrieval of financial data relevant to the dissertation objectives.
+    \item \textbf{Code Language}: The coding language employed throughout the study is Python (version 3.8). Python provided a robust and versatile platform for conducting the research and data analysis.
+    \item \textbf{Data Analysis and Statistical measurements}: For statistical analysis, \href{https://numpy.org/doc/}{Numpy}(version 1.20.3) and \href{https://pandas.pydata.org/docs/}{Pandas}(version 1.5.3) were used. These libraries offered comprehensive functionalities for data manipulation and statistical computations.
+    \item \textbf{Exploratory Data Analysis(EDA)}: \href{https://plotly.com/python/}{Plotly}(version 5.13.0) and Tableau\footnote{The student version of Tableau software was utilized, and access to this version was obtained by verifying and substantiating my student status as required by the provider.} were extensively used to generate plots and visualisations. 
+    \item \textbf{Optimisation}: Scipy's \href{https://docs.scipy.org/doc/scipy/reference/optimize.html}{optimisation}\footnote{The \href{SLSPQ}{SLSPQ} algorithm, provided within the optimization function of the Scipy library, was employed in this study.}(version 1.5.4),  was used to conduct the convex optimisation for the baseline mean-variance model. 
+    \item \textbf{Machine Learning}: For the deployment of ML algorithms, the study will utilise \href{https://scikit-learn.org/stable/}{Scikit-learn} library(version 0.23.2). Scikit-learn is widely used by ML practitioners as it provides a comphrehebsive set of tools for training, evaluating, and deploying ML models.
+\end{enumerate}
+These tools and libraries were carefully selected based on their suitability, reliability, and compatibility with the research objectives and methodologies. Their usage adhered to the terms and conditions of their respective licenses and complied with relevant legal and ethical guidelines.
+\newpage
+\addcontentsline{toc}{section}{Stock selection}
+\section*{\large{Stock Selection}}
+Here is the overall schematic of the initial stock selection process:
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[scale=0.7, every node/.style={scale=0.7}, node distance=2cm]
@@ -26,35 +38,70 @@ Here is the overall schematic of the stock selection process:
 \caption{The initial stock selection process.}
 \end{figure} 
 \newline
-We will be using the data from \href{https://www.nseindia.com/}{NSE}, an Indian stock exchange. The National Stock Exchange is one of the distinguished stock exchanges in India and plays a crucial role in the Indian financial market. Established in 1992, the NSE has emerged as a leading platform for the trade of several financial instruments, including derivatives, equities, currencies, debt securities etc. As of 19th June 2023, NSE had over 1,600 actively traded stocks listed on its platform. These stocks represent various sectors and industries, providing investors with a wide range of investment opportunities. We will be using \href{https://www.nseindia.com/market-data/live-equity-market}{NIFTY 50} for our study. \\\\
-This study employs the usage of \href{https://algotrading101.com/learn/yahoo-finance-api-guide/}{Yahoo Finance API} to gather the data from the NIFTY 50 index. The historical data of 10 years is utilised to feed into Markowitz's mean-variance model. The historical returns are utilised to rank the stocks on the basis of the weighted average of Sharpe (\cite{sharpe1964capital}) and Sortino (\cite{sortino1994downside}) ratios, with more weight assigned to the former. The KPI used to evaluate stock performance:
+The dissertation's data is acquired from \href{https://www.nseindia.com/}{National Stock Exchange(NSE)}, an Indian stock exchange. The National Stock Exchange is one of the distinguished stock exchanges in India and plays a crucial role in the Indian financial market. Established in 1992, the NSE has emerged as a leading platform for trading several financial instruments, including derivatives, equities, currencies, debt securities, etc. As of 19th June 2023, NSE had over 1,600 actively traded stocks listed on its platform. These stocks represent various sectors and industries, providing investors with myriad investment opportunities. We will be using \href{https://www.nseindia.com/market-data/live-equity-market}{NIFTY 50} for our study. \\\\
+This study employs the usage of \href{https://algotrading101.com/learn/yahoo-finance-api-guide/}{Yahoo Finance API} to gather the data from the NIFTY 50 index. The historical data of 10 years is fed into Markowitz's mean-variance model. The historical returns are used to rank the stocks based on the weighted average of Sharpe (\cite{sharpe1964capital}) and Sortino (\cite{sortino1994downside}) ratios, with more weight assigned to the former. The KPI used to evaluate stock performance:
 \begin{align}
     \label{eq:KPI}
     \text{KPI} = 0.7\times \text{Sharpe Ratio} + 0.3\times \text{Sortino Ratio}
 \end{align}
-The study examines the usage of the given KPI to generate the top 10 stocks based on historical returns of the stocks. The threshold of the stock selection is the 60th percentile of the KPI scores.
+The study examines the usage of the given KPI to generate the top 10 stocks based on historical returns. 
 \addcontentsline{toc}{section}{Key findings and figures}
 \section*{\large{Key findings and figures}}
-After evaluating the stocks based on the KPI mentioned above, here are the top 10 stocks for the NIFTY 50 index along with their cumulative growth based on the historical data of 10 years.
-\begin{figure}[h]
+Here are the top 10 stocks based on the KPI for the NIFTY 50 index and their cumulative growth based on the historical data of 10 years.
+\newpage
+\begin{figure}[t]
     \centering
-    \includegraphics[width=1\textwidth]{Methodology/Screenshot 2023-06-20 at 12.29.40 am.png}
+    \includegraphics[width=1\textwidth]{Methodology/wealth_growth.jpg}
     \caption{Cumulative returns in the span of 10 years.}
     \label{fig:image}
 \end{figure}
+
 \begin{table}[h]
     \centering
-    \begin{tabular}{|c|c|c|c|}
+    \begin{tabular}{|l|r|r|r|}
     \hline
-    \textbf{Stock Name} & \textbf{Ticker} & \textbf{KPI value} & \textbf{Cumulative Growth} \\
+    \textbf{Ticker} & \textbf{Sharpe Ratio} & \textbf{Sortino Ratio} & \textbf{KPI} \\
     \hline
-    Adani Enterprise & ADANIENT.NS & 1.34 & 29.04 \\
+    ADANIENT.NS & 1.248062 & 2.111403 & 1.507065 \\
+    APOLLOHOSP.NS & 0.791097 & 1.439578 & 0.985642 \\
+    NESTLEIND.NS & 0.732972 & 1.339456 & 0.914917 \\
+    TITAN.NS & 0.734486 & 1.220673 & 0.880342 \\
+    DIVISLAB.NS & 0.696405 & 1.170755 & 0.838710 \\
+    TATASTEEL.NS & 0.560782 & 1.389459 & 0.809385 \\
+    BAJFINANCE.NS & 0.684331 & 1.093758 & 0.807159 \\
+    TATACONSUM.NS & 0.652877 & 1.120283 & 0.793099 \\
+    HCLTECH.NS & 0.623058 & 1.045049 & 0.749655 \\
+    INFY.NS & 0.628178 & 1.010191 & 0.742782 \\
     \hline
-
     \end{tabular}
     \caption{Top 10 stocks based on KPI}
     \label{tab:my_label}
 \end{table}
+\newpage
+\begin{table}[h]
+    \centering
+    \small
+    \begin{tabular}{|l|r|r|r|r|r|r|r|r|}
+    \hline
+    \textbf{Stock} & \textbf{count} & \textbf{mean} & \textbf{std} & \textbf{min} & \textbf{25\%} & \textbf{50\%} & \textbf{75\%} & \textbf{max} \\
+    \hline
+    \textbf{ADANIENT.NS} & 1382.0 & 0.003056 & 0.035370 & -0.281970 & -0.011983 & 0.002250 & 0.016445 & 0.273680 \\
+    \textbf{APOLLOHOSP.NS} & 1382.0 & 0.001417 & 0.022977 & -0.149895 & -0.010918 & 0.000113 & 0.011797 & 0.154945 \\
+    \textbf{NESTLEIND.NS} & 1382.0 & 0.000967 & 0.014899 & -0.084893 & -0.007482 & 0.000274 & 0.008327 & 0.128040 \\
+    \textbf{TITAN.NS} & 1382.0 & 0.001167 & 0.019244 & -0.122560 & -0.008443 & 0.001160 & 0.010429 & 0.109913 \\
+    \textbf{DIVISLAB.NS} & 1382.0 & 0.001107 & 0.019289 & -0.117126 & -0.008834 & 0.000952 & 0.011428 & 0.146799 \\
+    \textbf{TATASTEEL.NS} & 1382.0 & 0.001564 & 0.036514 & -0.126132 & -0.012747 & 0.000677 & 0.013779 & 1.005783 \\
+    \textbf{TATACONSUM.NS} & 1382.0 & 0.001106 & 0.020113 & -0.142695 & -0.008766 & 0.000595 & 0.010618 & 0.112829 \\
+    \textbf{BAJFINANCE.NS} & 1382.0 & 0.001330 & 0.024859 & -0.232308 & -0.009948 & 0.000933 & 0.012339 & 0.109655 \\
+    \textbf{HCLTECH.NS} & 1382.0 & 0.000994 & 0.017756 & -0.085616 & -0.008416 & 0.001183 & 0.010824 & 0.111755 \\
+    \textbf{INFY.NS} & 1382.0 & 0.000982 & 0.017751 & -0.153057 & -0.008284 & 0.001359 & 0.009925 & 0.120334 \\
+    \hline
+    \end{tabular}
+    \caption{Statistics for Stocks}
+    \label{tab:my_table}
+\end{table}
+
+
 
 
 % \begin{table}[h]
