@@ -3,12 +3,12 @@
 \addcontentsline{toc}{section}{Data Collection}
 \section*{\large{Data Collection}}
 \begin{enumerate}
-    \item \textbf{Data Source}: The historical data of 10 years for this dissertation was collected using the Yahoo Finance API(\href{https://python-yahoofinance.readthedocs.io/en/latest/api.html}{yfinance}), specifically version 0.2.18. This API allowed for the retrieval of financial data relevant to the dissertation objectives.
-    \item \textbf{Code Language}: The coding language employed throughout the study is Python (version 3.8). Python provided a robust and versatile platform for conducting the research and data analysis.
+    \item \textbf{Data Source}: The historical data of 10 years for this dissertation was collected using the Yahoo Finance API(\href{https://python-yahoofinance.readthedocs.io/en/latest/api.html}{yfinance}), specifically version 0.2.18. This API allowed for retrieving the financial data relevant to the dissertation objectives.
+    \item \textbf{Code Language}: The coding language employed throughout the study is Python (version 3.8). Python provided a robust and versatile platform for conducting research and data analysis.
     \item \textbf{Data Analysis and Statistical measurements}: For statistical analysis, \href{https://numpy.org/doc/}{Numpy}(version 1.20.3) and \href{https://pandas.pydata.org/docs/}{Pandas}(version 1.5.3) were used. These libraries offered comprehensive functionalities for data manipulation and statistical computations.
-    \item \textbf{Exploratory Data Analysis(EDA)}: \href{https://plotly.com/python/}{Plotly}(version 5.13.0) and Tableau\footnote{The student version of Tableau software was utilized, and access to this version was obtained by verifying and substantiating my student status as required by the provider.} were extensively used to generate plots and visualisations. 
-    \item \textbf{Optimisation}: Scipy's \href{https://docs.scipy.org/doc/scipy/reference/optimize.html}{optimisation}\footnote{The \href{SLSPQ}{SLSPQ} algorithm, provided within the optimization function of the Scipy library, was employed in this study.}(version 1.5.4),  was used to conduct the convex optimisation for the baseline mean-variance model. 
-    \item \textbf{Machine Learning}: For the deployment of ML algorithms, the study will utilise \href{https://scikit-learn.org/stable/}{Scikit-learn} library(version 0.23.2). Scikit-learn is widely used by ML practitioners as it provides a comprehensive set of tools for training, evaluating, and deploying ML models.
+    \item \textbf{Exploratory Data Analysis(EDA)}: \href{https://plotly.com/python/}{Plotly}(version 5.13.0) and Tableau\footnote{Tableau's student version was used, and access to this version was obtained by verifying and substantiating my student status as required by the provider.} were extensively used to generate plots and visualisations. 
+    \item \textbf{Optimisation}: Scipy's \href{https://docs.scipy.org/doc/scipy/reference/optimize.html}{optimisation}\footnote{The \href{SLSPQ}{SLSPQ} algorithm, provided within the optimisation function of the Scipy library, was employed in this study.}(version 1.5.4),  was used to conduct the convex optimisation for the baseline mean-variance model. 
+    \item \textbf{Machine Learning}: For the deployment of ML algorithms, the study will employ \href{https://scikit-learn.org/stable/}{Scikit-learn} library(version 0.23.2). Scikit-learn is widely used by ML practitioners as it provides a comprehensive set of tools for training, evaluating, and deploying ML models.
 \end{enumerate}
 These tools and libraries were carefully selected based on their suitability, reliability, and compatibility with the research objectives and methodologies. Their usage adhered to the terms and conditions of their respective licenses and complied with relevant legal and ethical guidelines.
 \newpage
@@ -39,7 +39,7 @@ Here is the overall schematic of the initial stock selection process:
 \end{figure} 
 \newline
 The dissertation's data is acquired from \href{https://www.nseindia.com/}{National Stock Exchange(NSE)}, an Indian stock exchange. The National Stock Exchange is one of the distinguished stock exchanges in India and plays a crucial role in the Indian financial market. Established in 1992, the NSE has emerged as a leading platform for trading several financial instruments, including derivatives, equities, currencies, debt securities, etc. As of 19th June 2023, NSE had over 1,600 actively traded stocks listed on its platform. These stocks represent various sectors and industries, providing investors with myriad investment opportunities. We will be using \href{https://www.nseindia.com/market-data/live-equity-market}{NIFTY 50} for our study. \\\\
-This study employs the usage of \href{https://algotrading101.com/learn/yahoo-finance-api-guide/}{Yahoo Finance API} to gather the data from the NIFTY 50 index. The historical data of 10 years is fed into Markowitz's mean-variance model. The historical returns are used to rank the stocks based on the weighted average of Sharpe (\cite{sharpe1964capital}) and Sortino (\cite{sortino1994downside}) ratios, with more weight assigned to the former. Sortino ratio is defined by
+This study employs the usage of \href{https://algotrading101.com/learn/yahoo-finance-api-guide/}{Yahoo Finance API} to gather the data from the NIFTY 50 index. The historical data of 10 years is fed into Markowitz's mean-variance model. The historical returns are used to rank the stocks based on the weighted average of Sharpe (\cite{sharpe1964capital}) and Sortino (\cite{sortino1994downside}) ratios, with more weight assigned to the former. The Sortino ratio is defined by
 \begin{align}
     S_o = \frac{\mathbb{E}\left[R_p - r_f\right]}{\sigma_d}
 \end{align}
@@ -56,7 +56,7 @@ The KPI used to evaluate stock performance:
 The study utilises the KPI for the initial stock selection process.
 \addcontentsline{toc}{section}{Key findings and figures}
 \section*{\large{Key findings and figures}}
-Let $S_i$ and $r_{i}$ be the stock price and its return at time period $i$ respectively. Let $R$ be the total return on the stock and $T$ be the time horizon. The cumulative return is given by
+Let $S_i$ and $r_{i}$ be the stock price and its return at time $i$ respectively. Let $R$ be the total return on the stock and $T$ be the time horizon. The cumulative return is given by
 \begin{align}
     \label{eq:cumulative_return}
     R = \prod_{i=1}^T (1 + r_i)
@@ -147,11 +147,11 @@ The table \ref{tab:statistics_of_returns} represents the statistical analysis\fo
 \begin{enumerate}
     \item The stock with the daily mean return is ADANIENT.NS at 0.03056, while NESTLE.NS is the lowest at 0.00967.
     \item In terms of volatility, TATASTEEL.NS has the highest standard deviation (0.036514), indicating the highest risk, while NESTLEIND.NS is the least volatile stock with the least standard deviation (0.014899).
-    \item Highest single-day loss is registered by ADANIENT.NS (-0.281970), while the highest single-day gain is recorded by TATASTEEL.NS (1.005783).
+    \item The stock ADANIENT.NS registered the highest single-day loss (-0.281970), while TATASTEEL.NS recorded the highest single-day gain (1.005783).
     \item The wide difference between minimum and maximum returns for some stocks, including TATASTEEL.NS and BAJFINANCE.NS, reveals the presence of outliers, indicating anomalous daily returns.
     \item The stock with the greatest median return is INFY.NS, suggesting it typically had better daily returns compared to the others.
 \end{enumerate}
-The daily return data were utilized as input for the mean-variance model. The model assumes that a trading year comprises 252 days, and a historical dataset spanning 10 years is employed for analysis.
+The mean-variance model was fed with the daily return data, considering a trading year of 252 days. The analysis is based on a historical dataset spanning 10 years.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.72\textwidth]{Methodology/newplot(5).png}
