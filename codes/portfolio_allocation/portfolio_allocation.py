@@ -67,7 +67,7 @@ class StockSelection:
     """
 
     NUM_PORTFOLIO = (
-        500000  # Number of random portfolios used to generate Efficient Frontier
+        500  # Number of random portfolios used to generate Efficient Frontier
     )
 
     def __init__(
@@ -281,6 +281,8 @@ class StockSelection:
             result[stock] = optimum_weight
         print(self.display_statistics(optimal))
         print(result)
+        marker_x = statistics(optimal, self.returns[self.top_stocks["ticker"]])[1]
+        marker_y = statistics(optimal, self.returns[self.top_stocks["ticker"]])[0]
         fig = px.scatter(
             data_frame=portfolio_data,
             x="risk",
@@ -293,11 +295,34 @@ class StockSelection:
 
         fig.add_trace(
             go.Scatter(
-                x=[statistics(optimal, self.returns[self.top_stocks["ticker"]])[1]],
-                y=[statistics(optimal, self.returns[self.top_stocks["ticker"]])[0]],
+                x=[marker_x],
+                y=[marker_y],
                 mode="markers",
                 marker=dict(color="red", size=15),
             )
+        )
+
+        fig.update_layout(
+            annotations=[
+                dict(
+                    x=marker_x,
+                    y=marker_y,
+                    xref="x",
+                    yref="y",
+                    text="Optimal portfolio",
+                    showarrow=True,
+                    arrowhead=7,
+                    ax=0,
+                    ay=-50,
+                )
+            ],
+            legend=dict(
+                yanchor="top",
+                y=0.99,
+                xanchor="left",
+                x=0.01,
+            ),
+            showlegend=False,
         )
 
         fig.update_layout(
@@ -306,7 +331,7 @@ class StockSelection:
             coloraxis_colorbar=dict(title="Sharpe Ratio"),
             showlegend=True,
         )
-        fig.write_html("images/efficient_portfolio.html")
+        # fig.write_html("images/efficient_portfolio.html")
         fig.show()
 
 
@@ -320,7 +345,9 @@ def run_script():
     data = pd.read_csv(path)
     # sample_stocks = ["AAPL", "AMZN", "MSFT", "JPM", "DB", "NVDA"]
     stocks = data["indices"][1:].tolist()
-    portfolio = StockSelection(tickers=stocks, start_date=START_TIME, end_date=END_TIME)
+    portfolio = StockSelection(
+        tickers=stocks, start_date=START_TIME, end_date=END_TIME, investment=10e6
+    )
     portfolio.display_and_print_portfolio()
 
 

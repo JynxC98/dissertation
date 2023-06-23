@@ -33,8 +33,9 @@ def calculate_sharpe_and_sortino_ratio(
     excess_return = np.mean(returns - risk_free_rate) * NUM_TRADING_DAYS
 
     # Calculation of Sharpe Ratio
-    portfolio_volatility = np.std(returns - risk_free_rate, ddof=1)
-    sharpe_ratio = (excess_return) / (portfolio_volatility * np.sqrt(NUM_TRADING_DAYS))
+    # portfolio_volatility = np.std(returns - risk_free_rate, ddof=1)
+    portfolio_volatility = np.std(returns - risk_free_rate) * np.sqrt(NUM_TRADING_DAYS)
+    sharpe_ratio = (excess_return) / portfolio_volatility
 
     # Calculation of Sortino Ratio
     downside_returns = np.where(returns < risk_free_rate, returns - risk_free_rate, 0)
@@ -69,10 +70,12 @@ def statistics(weights, returns, risk_free_rate=RISK_FREE_RATE, n_days=252) -> n
     """
 
     portfolio_return = np.sum(np.dot(returns.mean(), weights.T)) * n_days
-    excess_return = returns - risk_free_rate
     portfolio_volatility = np.sqrt(
-        np.dot(weights.T, np.dot(excess_return.cov(), weights))
+        np.dot(weights.T, np.dot(returns.cov(), weights))
     ) * np.sqrt(n_days)
+    # portfolio_volatility = np.sqrt(
+    #     np.dot(weights.T, np.dot(excess_return.cov(), weights))
+    # ) * np.sqrt(n_days)
     return np.array(
         [
             portfolio_return,
