@@ -8,7 +8,7 @@
     \item \textbf{Data Analysis and Statistical measurements}: For statistical analysis, \href{https://numpy.org/doc/}{Numpy}(version 1.20.3) and \href{https://pandas.pydata.org/docs/}{Pandas}(version 1.5.3) were used. These libraries offered comprehensive functionalities for data manipulation and statistical computations.
     \item \textbf{Exploratory Data Analysis(EDA)}: \href{https://plotly.com/python/}{Plotly}(version 5.13.0) and Tableau\footnote{The student version of Tableau software was utilized, and access to this version was obtained by verifying and substantiating my student status as required by the provider.} were extensively used to generate plots and visualisations. 
     \item \textbf{Optimisation}: Scipy's \href{https://docs.scipy.org/doc/scipy/reference/optimize.html}{optimisation}\footnote{The \href{SLSPQ}{SLSPQ} algorithm, provided within the optimization function of the Scipy library, was employed in this study.}(version 1.5.4),  was used to conduct the convex optimisation for the baseline mean-variance model. 
-    \item \textbf{Machine Learning}: For the deployment of ML algorithms, the study will utilise \href{https://scikit-learn.org/stable/}{Scikit-learn} library(version 0.23.2). Scikit-learn is widely used by ML practitioners as it provides a comphrehebsive set of tools for training, evaluating, and deploying ML models.
+    \item \textbf{Machine Learning}: For the deployment of ML algorithms, the study will utilise \href{https://scikit-learn.org/stable/}{Scikit-learn} library(version 0.23.2). Scikit-learn is widely used by ML practitioners as it provides a comprehensive set of tools for training, evaluating, and deploying ML models.
 \end{enumerate}
 These tools and libraries were carefully selected based on their suitability, reliability, and compatibility with the research objectives and methodologies. Their usage adhered to the terms and conditions of their respective licenses and complied with relevant legal and ethical guidelines.
 \newpage
@@ -44,18 +44,29 @@ This study employs the usage of \href{https://algotrading101.com/learn/yahoo-fin
     \label{eq:KPI}
     \text{KPI} = 0.7\times \text{Sharpe Ratio} + 0.3\times \text{Sortino Ratio}
 \end{align}
-The study examines the usage of the given KPI to generate the top 10 stocks based on historical returns. 
+The study utilises the KPI for the initial stock selection process.
 \addcontentsline{toc}{section}{Key findings and figures}
 \section*{\large{Key findings and figures}}
-Here are the top 10 stocks based on the KPI for the NIFTY 50 index and their cumulative growth based on the historical data of 10 years.
-\newpage
+Let $S_i$ and $r_{i}$ be the stock price and its return at time period $i$ respectively. Let $R$ be the total return on the stock and $T$ be the time horizon. The cumulative return is given by
+\begin{align}
+    \label{eq:cumulative_return}
+    R = \prod_{i=1}^T (1 + r_i)
+\end{align}
+For this dissertation, percentage return is used.
+\begin{align}
+    \label{eq:percentage_return}
+    r = \frac{p_t - p_{t-1}}{p_{t-1}}
+\end{align}
+where, \\
+$p_t$: Stock price in the current period \\
+$p_{t-1}$: Previous stock price \\\\
+Presented below are the top 10 stocks, determined by the KPI, for the NIFTY 50 index, using historical data spanning a period of 10 years.
 \begin{figure}[t]
     \centering
     \includegraphics[width=1\textwidth]{Methodology/wealth_growth.jpg}
     \caption{Cumulative returns in the span of 10 years.}
     \label{fig:image}
 \end{figure}
-
 \begin{table}[h]
     \centering
     \begin{tabular}{|l|r|r|r|}
@@ -75,7 +86,7 @@ Here are the top 10 stocks based on the KPI for the NIFTY 50 index and their cum
     \hline
     \end{tabular}
     \caption{Top 10 stocks based on KPI}
-    \label{tab:my_label}
+    \label{tab:top_10_stocks}
 \end{table}
 \newpage
 \begin{table}[h]
@@ -98,25 +109,46 @@ Here are the top 10 stocks based on the KPI for the NIFTY 50 index and their cum
     \hline
     \end{tabular}
     \caption{Statistics for Stocks}
-    \label{tab:my_table}
+    \label{tab:statistics_of_returns}
 \end{table}
-
-
-
-
-% \begin{table}[h]
-% \centering
-% \begin{tabular}{|c|c|c|}
-% \hline
-% \textbf{Column 1} & \textbf{Column 2} & \textbf{Column 3} \\
-% \hline
-% Value 1 & Value 2 & Value 3 \\
-% \hline
-% Value 4 & Value 5 & Value 6 \\
-% \hline
-% \end{tabular}
-% \caption{Your table caption}
-% \label{tab:my_label}
-% \end{table}
-
-
+The table \ref{tab:statistics_of_returns} represents the statistical analysis\footnote{The values here are in absolute terms.} of daily returns for ten different stocks over a period of 1382 observations. It is observed that
+\begin{enumerate}
+    \item The stock with the daily mean return is ADANIENT.NS at 0.03056, while NESTLE.NS is the lowest at 0.00967.
+    \item In terms of volatility, TATASTEEL.NS has the highest standard deviation (0.036514), indicating the highest risk, while NESTLEIND.NS is the least volatile stock with the least standard deviation (0.014899).
+    \item Highest single-day loss is registered by ADANIENT.NS (-0.281970), while the highest single-day gain is recorded by TATASTEEL.NS (1.005783).
+    \item The wide difference between minimum and maximum returns for some stocks, including TATASTEEL.NS and BAJFINANCE.NS, reveals the presence of outliers, indicating anomalous daily returns.
+    \item The stock with the greatest median return is INFY.NS, suggesting it typically had better daily returns compared to the others.
+\end{enumerate}
+The daily return data were utilized as input for the mean-variance model. The model assumes that a trading year comprises 252 days, and a historical dataset spanning 10 years is employed for analysis.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.72\textwidth]{Methodology/newplot(5).png}
+    \caption{Optimal investment}
+    \label{fig:optimal_investment}
+\end{figure}
+\newline
+The optimal portfolio shown in figure \ref{fig:optimal_investment} has the following statistics: a) \textbf{\small{Sharpe Ratio}}: 1.4653, b) \textbf{\small{Expected return}}: 0.4257, c) \textbf{\small{Volatility}}: 0.2827 \\\\
+The table \ref{tab:capital_allocation} showcases the optimal capital allocation for various stocks generated by a mean-variance optimisation model. This model accounts for the expected return (mean) and the volatility (variance) to optimise the portfolio. The allocations are proportional to the expected return and inversely proportional to the risk.
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|r|}
+    \hline
+    \textbf{Stock} & \textbf{Capital Allocation} \\
+    \hline
+    \textbf{ADANIENT.NS} & 0.2827 \\
+    \textbf{APOLLOHOSP.NS} & 0.1495 \\
+    \textbf{NESTLEIND.NS} & 0.2110 \\
+    \textbf{TITAN.NS} & 0.0937 \\
+    \textbf{DIVISLAB.NS} & 0.0848 \\
+    \textbf{TATASTEEL.NS} & 0.0546 \\
+    \textbf{TATACONSUM.NS} & 0.0000 \\
+    \textbf{BAJFINANCE.NS} & 0.0000 \\
+    \textbf{HCLTECH.NS} & 0.0481 \\
+    \textbf{INFY.NS} & 0.0755 \\
+    \hline
+    \end{tabular}
+    \caption{Optimal Capital Allocation}
+    \label{tab:capital_allocation}
+\end{table}
+\newline
+The largest capital allocation is awarded to ADANIENT.NS (28.27\%), which could be due to its considerable returns in the past three years\footnote{The period between June 2020 and July 2023}, witnessing a tremendous growth of over 1000\%. On the other hand, TATACONSUM.NS and BAJFINANCE.NS have zero allocation due to relatively lower returns or higher risk levels.

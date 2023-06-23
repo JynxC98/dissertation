@@ -129,19 +129,25 @@ The equations \ref{eq:gradient} and \ref{eq:hessian} are the first derivative(gr
     \label{eq:simplified_obj_fucntion}
     \Tilde{\mathcal{L}}^{(t)} = \sum_{i=1}^n \left[{g_i f_t(x_i)} + \frac{1}{2} h_i f_t^2(x_i)\right] + \Omega (f_t)
 \end{align}
-Let $I_j = {i\|q(x_i) = j}$ be an instance of leaf $j$. Equation \ref{eq:simplified_obj_fucntion} after expanding $\Omega$ can be written as
+Let $I_j = \{i|q(x_i) = j\}$ be an instance of leaf $j$. Equation \ref{eq:simplified_obj_fucntion} after expanding $\Omega$ can be written as
 \begin{align}
     \label{eq:updated_cost_function}
-    \Tilde{\mathcal{L}}^{(t)} = \sum_{j=1}^{T}\left[(\sum_{i \in I_j} g_i)w_j + \frac{1}{2}(\sum_{i \in I_j} h_i + \lambda)w_i^2\right] + \gamma T
+    \Tilde{\mathcal{L}}^{(t)} = \sum_{j=1}^{T}\left[(\sum_{i \in I_j} g_i)w_j + \frac{1}{2}(\sum_{i \in I_j} h_i + \lambda)w_j^2\right] + \gamma T
 \end{align}
-The optimal weight $w_j^*$ of the leaf $j$  can be computed as
+The optimal weight is derived by minimizing the equation \ref{eq:updated_cost_function} w.r.t. $w_j$. The optimal weight ($w_j^*$) of the leaf $j$  can be computed as
+\begin{gather*}
+    \frac{\partial}{\partial w_j} \Tilde{\mathcal{L}}^{(t)} = 0 \\
+    \implies \frac{\partial}{\partial w_j} \left\{\sum_{j=1}^{T}\left[(\sum_{i \in I_j} g_i)w_j + \frac{1}{2}(\sum_{i \in I_j} h_i + \lambda)w_j^2\right] + \gamma T\right\} = 0 \\\\
+    \implies (\sum_{i \in I_j} g_i) + (\sum_{i \in I_j} h_i + \lambda)w_j^* = 0 
+\end{gather*}
 \begin{align}
     \label{eq: Optimal weight}
-    w_j^* = - \frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}
+    \therefore w_j^* = - \frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}
 \end{align}
-and the optimal value can be calculated as
+and the optimal value is calculated by substituting equation \ref{eq: Optimal weight} in equation \ref{eq:updated_cost_function}
 \begin{align}
     \label{eq: optimal value}
-    \Tilde{\mathcal{L}}^{(t)}(q) = - \frac{1}{2} \sum_{j=1}^{T} \frac{(\sum_{i \in I_j g_i})^2}{\sum_{i \in I_j} + \lambda} + \gamma T
+    \Tilde{\mathcal{L}}^{(t)}(q) = - \frac{1}{2} \sum_{j=1}^{T} \frac{(\sum_{i \in I_j g_i})^2}{\sum_{i \in I_j} + \lambda} + \gamma T 
 \end{align}
-Equation \ref{eq: optimal value} can be utilised as an evaluation function to measure the quality of the tree structure $q$. This score is similar to the impurity score used to evaluate decision trees, except that it is derived for a broader range of objective functions.
+Equation \ref{eq: optimal value} can be utilised as an evaluation function to measure the quality of the tree structure $q$. This score is similar to the impurity score used to evaluate decision trees, except that it is derived for a broader range of objective functions\footnote{I would like to express my gratitude to Josh Staramer for his valuable explanations of the XGBoost algorithm in his \href{https://www.youtube.com/@statquest}{StatQuest} YouTube channel. His videos have greatly helped me in understanding and explaining this algorithm.
+}.
