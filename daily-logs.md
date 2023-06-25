@@ -1,4 +1,7 @@
 # Daily logs to record the progress
+22nd - 24th June
+1. Worked on Literature review and completed the first draft.
+2. Started watching videos on technical indicators.
 ### 20th June and 21st June
 1. Worked on the first draft of the dissertation
 2. Corrected the grammar and the consistency of the literature.
