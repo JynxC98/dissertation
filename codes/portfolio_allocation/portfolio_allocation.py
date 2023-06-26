@@ -2,8 +2,9 @@
 Script that would select the stocks which would outperform the market returns.
 We will be using the NIFTY 50 index for our stock selection.
 """
+import warnings
 from typing import List, Type
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 import os
 from collections import defaultdict
 import numpy as np
@@ -21,6 +22,8 @@ from helper_functions import (
     statistics,
     # VaRMonteCarloMulti, # Used to calculate the VaR for the asset classes.
 )
+
+warnings.filterwarnings("ignore")
 
 NUM_TRADING_DAYS = 252  # Assumption
 RISK_FREE_RATE = (
@@ -67,7 +70,7 @@ class StockSelection:
     """
 
     NUM_PORTFOLIO = (
-        500  # Number of random portfolios used to generate Efficient Frontier
+        1000  # Number of random portfolios used to generate Efficient Frontier
     )
 
     def __init__(
@@ -115,25 +118,26 @@ class StockSelection:
             stock_data[stock] = ticker.history(
                 start=self.start_date, end=self.end_date
             )["Close"]
-        return pd.DataFrame(stock_data)
+        return pd.DataFrame(stock_data).dropna(axis=1)
 
     def calculate_returns(self) -> pd.DataFrame:
         """
         Calculates the percentage return of the data.
         """
         data = self.get_data_from_yahoo()
+        # Dropping columns that don't have data of 10 years
         returns = data.pct_change().dropna()
-        self.returns = pd.DataFrame(returns)  # We save the value of log returns.
+        self.returns = pd.DataFrame(returns)  # We save the value of pct returns.
         return pd.DataFrame(
             returns
         )  # We skip the first row to eliminate the NaN values.
 
     def return_top_stocks(self) -> pd.DataFrame:
         """
-        Returns the top 15 stocks based on sharpe ratio and sortino ratio.
+        Returns the top stocks based on sharpe ratio and sortino ratio.
         """
-        stock_data = defaultdict(list)
         returns = self.calculate_returns()
+        stock_data = defaultdict(list)
         for stock in returns:  # We start from column 1 as column 0 is the index's data.
             stock_data["ticker"].append(stock)
             stock_data["sharpe ratio"].append(
@@ -144,13 +148,26 @@ class StockSelection:
             )
 
         stock_data = pd.DataFrame(stock_data)
-        stock_data["kpi"] = (
-            0.7 * stock_data["sharpe ratio"] + 0.3 * stock_data["sortino ratio"]
+        # Top stocks based on Sharpe Ratio
+        threshold_sharpe = np.percentile(stock_data["sharpe ratio"], 60)
+        top_stocks_sharpe = (
+            stock_data.sort_values(by=["sharpe ratio"], ascending=False)[
+                stock_data["sharpe ratio"] > threshold_sharpe
+            ]
+            .iloc[0:9]["ticker"]
+            .tolist()
         )
-        stock_data.sort_values(by=["kpi"], ascending=False, inplace=True)
-        self.portfolio_data = stock_data[0:10]
-        print(stock_data)
-        return stock_data[0:10]
+
+        # Top stocks based on Sortino Ratio
+        threshold_sortino = np.percentile(stock_data["sortino ratio"], 60)
+        top_stocks_sortino = (
+            stock_data.sort_values(by=["sortino ratio"], ascending=False)[
+                stock_data["sortino ratio"] > threshold_sortino
+            ]
+            .iloc[0:9]["ticker"]
+            .tolist()
+        )
+        return returns[set(top_stocks_sharpe).intersection(set(top_stocks_sortino))]
 
     def plot_returns(self) -> pd.DataFrame:
         """
@@ -158,7 +175,7 @@ class StockSelection:
         """
         top_stocks = self.return_top_stocks()
 
-        cumulative_returns = (1 + self.returns[top_stocks["ticker"]]).cumprod()
+        cumulative_returns = (1 + top_stocks).cumprod()
         fig = px.line(
             cumulative_returns,
             labels={"value": "times compounded", "Date": "year"},
@@ -173,18 +190,18 @@ class StockSelection:
         self.top_stocks = top_stocks
         return top_stocks
 
-    def generate_portfolios(self) -> dict:
+    def generate_portfolios(self):
         """
         Generates random portfolios for creating an efficient frontier.
         """
         portfolio_data = defaultdict(list)
         top_stocks = self.plot_returns()
         weights = []
-        required_returns = self.returns[top_stocks["ticker"].tolist()]
+        required_returns = top_stocks
         with alive_bar(self.NUM_PORTFOLIO) as pbar:
             print("Generating portfolios \n")
             for _ in range(self.NUM_PORTFOLIO):
-                weight = np.random.random(len(top_stocks["ticker"]))
+                weight = np.random.random(top_stocks.shape[1])
                 weight /= np.sum(weight)
                 weights.append(weight)
 
@@ -240,12 +257,12 @@ class StockSelection:
         Optimal weights in which one should invest in the top stocks.
         """
         _ = self.generate_portfolios()
-        returns = self.returns[self.top_stocks["ticker"].tolist()]
+        returns = self.top_stocks
         func = minimise_function
         constraints = {"type": "eq", "fun": lambda x: np.sum(x) - 1}
         # The weights can at the most be 1.
-        bounds = tuple((0, 1) for _ in range(len(self.top_stocks["ticker"])))
-        random_weights = np.random.random(len(self.top_stocks["ticker"]))
+        bounds = tuple((0, 1) for _ in range(returns.shape[1]))
+        random_weights = np.random.random(returns.shape[1])
         random_weights /= np.sum(random_weights)
         optimum = optimize.minimize(
             fun=func,
@@ -266,7 +283,7 @@ class StockSelection:
         """
         return (
             "Expected return, volatility and Sharpe ratio: ",
-            statistics(weights.round(3), self.returns[self.top_stocks["ticker"]]),
+            statistics(weights.round(3), self.top_stocks),
         )
 
     def display_and_print_portfolio(self) -> None:
@@ -276,13 +293,14 @@ class StockSelection:
         """
         optimal = self.optimize_portfolio()
         portfolio_data = self.portfolio_data
+        top_stocks = self.top_stocks
         result = {}
-        for stock, optimum_weight in zip(self.top_stocks["ticker"], optimal):
+        for stock, optimum_weight in zip(top_stocks.columns, optimal):
             result[stock] = optimum_weight
         print(self.display_statistics(optimal))
         print(result)
-        marker_x = statistics(optimal, self.returns[self.top_stocks["ticker"]])[1]
-        marker_y = statistics(optimal, self.returns[self.top_stocks["ticker"]])[0]
+        marker_x = statistics(optimal, top_stocks)[1]
+        marker_y = statistics(optimal, top_stocks)[0]
         fig = px.scatter(
             data_frame=portfolio_data,
             x="risk",
@@ -340,7 +358,7 @@ def run_script():
     Script to run the file
     """
     path = r"~/dissertation/datasets/required_stocks.csv"
-    END_TIME = datetime.now()
+    END_TIME = date(2023, 7, 1)
     START_TIME = END_TIME - timedelta(365 * 10)  # We take data of 10 years
     data = pd.read_csv(path)
     # sample_stocks = ["AAPL", "AMZN", "MSFT", "JPM", "DB", "NVDA"]
