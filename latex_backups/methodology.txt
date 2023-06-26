@@ -71,28 +71,28 @@ $p_t$: Stock price in the current period \\
 $p_{t-1}$: Previous stock price
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.85\textwidth]{Methodology/wealth_growth.jpg}
+    \includegraphics[width=0.9\textwidth]{Methodology/newplot(1).png}
     \caption{Cumulative returns in the span of 10 years.}
     \label{fig:image}
 \end{figure}
 \begin{table}[h]
     \centering
-    \begin{tabular}{|l|r|}
-    \hline
-    \textbf{Stock} & \textbf{Growth} \\
-    \hline
-    ADANIENT.NS & 28.506 \\
-    APOLLOHOSP.NS & 4.883 \\
-    NESTLEIND.NS & 3.217 \\
-    TITAN.NS & 3.881 \\
-    DIVISLAB.NS & 3.605 \\
-    TATASTEEL.NS & 4.232 \\
-    TATACONSUM.NS & 3.414 \\
-    BAJFINANCE.NS & 3.977 \\
-    HCLTECH.NS & 3.156 \\
-    INFY.NS & 3.076 \\
-    \hline
-    \end{tabular}
+\begin{tabular}{|l|r|}
+\hline
+\textbf{Stock} & \textbf{Growth} \\
+\hline
+BAJFINANCE.NS & 52.884323 \\
+BRITANNIA.NS & 18.045825 \\
+ADANIENT.NS & 89.707355 \\
+BAJAJFINSV.NS & 24.048048 \\
+TITAN.NS & 13.830394 \\
+JSWSTEEL.NS & 14.249522 \\
+EICHERMOT.NS & 11.954589 \\
+ASIANPAINT.NS & 7.898897 \\
+TATASTEEL.NS & 12.474015 \\
+HCLTECH.NS & 7.601352 \\
+\hline
+\end{tabular}
     \caption{Stock Growth in the span of 10 years}
     \label{tab:stock_growth}
 \end{table}
@@ -100,67 +100,65 @@ $p_{t-1}$: Previous stock price
 \noindent
 The table \ref{tab:top_10_stocks} displayes the values of Sharpe Ratio, Sortino Ratio and the corresponding KPI values.
 \begin{table}[h]
-    \centering
-    \begin{tabular}{|l|r|r|r|}
-    \hline
-    \textbf{Ticker} & \textbf{Sharpe Ratio} & \textbf{Sortino Ratio} & \textbf{KPI} \\
-    \hline
-    ADANIENT.NS & 1.248062 & 2.111403 & 1.507065 \\
-    APOLLOHOSP.NS & 0.791097 & 1.439578 & 0.985642 \\
-    NESTLEIND.NS & 0.732972 & 1.339456 & 0.914917 \\
-    TITAN.NS & 0.734486 & 1.220673 & 0.880342 \\
-    DIVISLAB.NS & 0.696405 & 1.170755 & 0.838710 \\
-    TATASTEEL.NS & 0.560782 & 1.389459 & 0.809385 \\
-    BAJFINANCE.NS & 0.684331 & 1.093758 & 0.807159 \\
-    TATACONSUM.NS & 0.652877 & 1.120283 & 0.793099 \\
-    HCLTECH.NS & 0.623058 & 1.045049 & 0.749655 \\
-    INFY.NS & 0.628178 & 1.010191 & 0.742782 \\
-    \hline
-    \end{tabular}
+\centering
+\begin{tabular}{|l|r|r|r|}
+\hline
+\textbf{Ticker} & \textbf{Sharpe Ratio} & \textbf{Sortino Ratio} & \textbf{KPI} \\
+\hline
+BAJFINANCE.NS  & 1.079519     & 1.819494      & 1.301512 \\
+BRITANNIA.NS   & 0.997274     & 1.791131      & 1.235431 \\
+ADANIENT.NS    & 0.989250     & 1.625787      & 1.180211 \\
+BAJAJFINSV.NS  & 0.921565     & 1.558132      & 1.112535 \\
+TITAN.NS       & 0.779165     & 1.364510      & 0.954769 \\
+JSWSTEEL.NS    & 0.743176     & 1.247523      & 0.894480 \\
+EICHERMOT.NS   & 0.720085     & 1.285268      & 0.889640 \\
+ASIANPAINT.NS  & 0.665725     & 1.136649      & 0.807002 \\
+TATASTEEL.NS   & 0.586575     & 1.305080      & 0.802127 \\
+HCLTECH.NS     & 0.633753     & 1.047578      & 0.757900  \\
+\hline
+\end{tabular}
     \caption{Top 10 stocks based on KPI}
     \label{tab:top_10_stocks}
 \end{table}
 \begin{table}[h]
-    \centering
-    \small
-    \begin{tabular}{|l|r|r|r|r|r|r|r|r|}
-    \hline
-    \textbf{Stock} & \textbf{count} & \textbf{mean} & \textbf{std} & \textbf{min} & \textbf{25\%} & \textbf{50\%} & \textbf{75\%} & \textbf{max} \\
-    \hline
-    \textbf{ADANIENT.NS} & 1382.0 & 0.003056 & 0.035370 & -0.281970 & -0.011983 & 0.002250 & 0.016445 & 0.273680 \\
-    \textbf{APOLLOHOSP.NS} & 1382.0 & 0.001417 & 0.022977 & -0.149895 & -0.010918 & 0.000113 & 0.011797 & 0.154945 \\
-    \textbf{NESTLEIND.NS} & 1382.0 & 0.000967 & 0.014899 & -0.084893 & -0.007482 & 0.000274 & 0.008327 & 0.128040 \\
-    \textbf{TITAN.NS} & 1382.0 & 0.001167 & 0.019244 & -0.122560 & -0.008443 & 0.001160 & 0.010429 & 0.109913 \\
-    \textbf{DIVISLAB.NS} & 1382.0 & 0.001107 & 0.019289 & -0.117126 & -0.008834 & 0.000952 & 0.011428 & 0.146799 \\
-    \textbf{TATASTEEL.NS} & 1382.0 & 0.001564 & 0.036514 & -0.126132 & -0.012747 & 0.000677 & 0.013779 & 1.005783 \\
-    \textbf{TATACONSUM.NS} & 1382.0 & 0.001106 & 0.020113 & -0.142695 & -0.008766 & 0.000595 & 0.010618 & 0.112829 \\
-    \textbf{BAJFINANCE.NS} & 1382.0 & 0.001330 & 0.024859 & -0.232308 & -0.009948 & 0.000933 & 0.012339 & 0.109655 \\
-    \textbf{HCLTECH.NS} & 1382.0 & 0.000994 & 0.017756 & -0.085616 & -0.008416 & 0.001183 & 0.010824 & 0.111755 \\
-    \textbf{INFY.NS} & 1382.0 & 0.000982 & 0.017751 & -0.153057 & -0.008284 & 0.001359 & 0.009925 & 0.120334 \\
-    \hline
-    \end{tabular}
+\centering
+\small
+\begin{tabular}{|l|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{Ticker}          & \textbf{Count} & \textbf{Mean}     & \textbf{Std}      & \textbf{Min}       & \textbf{25\%}      & \textbf{50\%}      & \textbf{75\%}      & \textbf{Max}       \\ \hline
+BAJFINANCE.NS   & 2464  & 0.001896 & 0.023801 & -0.232308 & -0.009366 & 0.000948  & 0.012951  & 0.110052  \\
+BRITANNIA.NS    & 2464  & 0.001309 & 0.016416 & -0.133702 & -0.007145 & 0.000410  & 0.009227  & 0.106639  \\
+ADANIENT.NS     & 2464  & 0.002438 & 0.034667 & -0.387493 & -0.012438 & 0.001833  & 0.016773  & 0.273680  \\
+BAJAJFINSV.NS   & 2464  & 0.001524 & 0.021466 & -0.258621 & -0.009593 & 0.000596  & 0.011721  & 0.114534  \\
+TITAN.NS        & 2464  & 0.001269 & 0.020205 & -0.122560 & -0.008970 & 0.000715  & 0.010510  & 0.187874  \\
+JSWSTEEL.NS     & 2464  & 0.001334 & 0.022572 & -0.178378 & -0.011301 & 0.001115  & 0.013703  & 0.123667  \\
+EICHERMOT.NS    & 2464  & 0.001224 & 0.020863 & -0.125813 & -0.010493 & 0.000246  & 0.011677  & 0.133801  \\
+ASIANPAINT.NS   & 2464  & 0.000979 & 0.016723 & -0.140279 & -0.007907 & 0.000531  & 0.009783  & 0.088527  \\
+TATASTEEL.NS    & 2464  & 0.001439 & 0.031444 & -0.131296 & -0.012762 & 0.000586  & 0.013864  & 1.005783  \\
+HCLTECH.NS      & 2464  & 0.000977 & 0.017523 & -0.127374 & -0.008624 & 0.001195  & 0.010542  & 0.111754  \\ \hline
+\end{tabular}
     \caption{Statistics for Stocks}
     \label{tab:statistics_of_returns}
 \end{table}
 \newline
-The table \ref{tab:statistics_of_returns} represents the statistical analysis\footnote{The values here are in absolute terms.} of daily returns for ten different stocks over a period of 1382 observations. It is observed that
+The table \ref{tab:statistics_of_returns} represents the statistical analysis\footnote{The values here are in absolute terms.} of daily returns for ten different stocks over a period of 2464 observations. It is observed that
 \begin{enumerate}
-    \item The stock with the daily mean return is ADANIENT.NS at 0.03056, while NESTLE.NS is the lowest at 0.00967.
-    \item In terms of volatility, TATASTEEL.NS has the highest standard deviation (0.036514), indicating the highest risk, while NESTLEIND.NS is the least volatile stock with the least standard deviation (0.014899).
-    \item The stock ADANIENT.NS registered the highest single-day loss (-0.281970), while TATASTEEL.NS recorded the highest single-day gain (1.005783).
+    \item The stock with highest daily mean return is ADANIENT.NS at 0.02438, while HCLTECH.NS is the lowest at 0.00967.
+    \item In terms of volatility, ADANIENT.NS has the highest standard deviation (0.034667), indicating the highest risk, while BRITANNIA.NS is the least volatile stock with the least standard deviation (0.016416).
+    \item The stock ADANIENT.NS registered the highest single-day loss (-0.387493), while TATASTEEL.NS recorded the highest single-day gain (1.005783).
     \item The wide difference between minimum and maximum returns for some stocks, including TATASTEEL.NS and BAJFINANCE.NS, reveals the presence of outliers, indicating anomalous daily returns.
-    \item The stock with the greatest median return is INFY.NS, suggesting it typically had better daily returns compared to the others.
+    \item The stock with the greatest median return is ADANIENT.NS, suggesting it typically had better daily returns compared to the others.
 \end{enumerate}
 The mean-variance model was fed with the daily return data, considering a trading year of 252 days. The analysis is based on a historical dataset spanning 10 years.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.72\textwidth]{Methodology/newplot(5).png}
+    \includegraphics[width=0.72\textwidth]{Methodology/newplot(6).png}
     \caption{Optimal investment}
     \label{fig:optimal_investment}
 \end{figure}
 \newpage
 \noindent
-The optimal portfolio shown in figure \ref{fig:optimal_investment} has the following statistics: a) \textbf{\small{Sharpe Ratio}}: 1.4653, b) \textbf{\small{Expected return}}: 0.4257, c) \textbf{\small{Volatility}}: 0.2827 \\\\
+The optimal portfolio\footnote{The risk-free rate of 7\% is assumed to be constant throughout the time period} shown in figure \ref{fig:optimal_investment} has the following statistics: a) \textbf{\small{Sharpe Ratio}}: 1.499, b) \textbf{\small{Expected return}}: 0.3892, c) \textbf{\small{Volatility}}: 0.2128 \\\\
 The table \ref{tab:capital_allocation} showcases the optimal capital allocation for various stocks generated by a mean-variance optimisation model. This model accounts for the expected return (mean) and the volatility (variance) to optimise the portfolio. The allocations are proportional to the expected return and inversely proportional to the risk.
 \begin{table}[h]
     \centering
@@ -168,20 +166,54 @@ The table \ref{tab:capital_allocation} showcases the optimal capital allocation 
     \hline
     \textbf{Stock} & \textbf{Capital Allocation} \\
     \hline
-    \textbf{ADANIENT.NS} & 0.2827 \\
-    \textbf{APOLLOHOSP.NS} & 0.1495 \\
-    \textbf{NESTLEIND.NS} & 0.2110 \\
-    \textbf{TITAN.NS} & 0.0937 \\
-    \textbf{DIVISLAB.NS} & 0.0848 \\
-    \textbf{TATASTEEL.NS} & 0.0546 \\
-    \textbf{TATACONSUM.NS} & 0.0000 \\
-    \textbf{BAJFINANCE.NS} & 0.0000 \\
-    \textbf{HCLTECH.NS} & 0.0481 \\
-    \textbf{INFY.NS} & 0.0755 \\
+    BAJFINANCE.NS & 0.2095 \\
+    BRITANNIA.NS & 0.3123 \\
+    ADANIENT.NS & 0.1452 \\
+    BAJAJFINSV.NS & 0.0121 \\
+    TITAN.NS & 0.1047 \\
+    JSWSTEEL.NS & 0.0000 \\
+    EICHERMOT.NS & 0.0300 \\
+    ASIANPAINT.NS & 0.0033 \\
+    TATASTEEL.NS & 0.0318 \\
+    HCLTECH.NS & 0.1511 \\
     \hline
     \end{tabular}
     \caption{Optimal Capital Allocation}
     \label{tab:capital_allocation}
 \end{table}
-\newline
-The largest capital allocation is awarded to ADANIENT.NS (28.27\%), which could be due to its considerable returns in the past three years\footnote{The period between June 2020 and July 2023}, witnessing a tremendous growth of over 1000\%. On the other hand, TATACONSUM.NS and BAJFINANCE.NS have zero allocation due to relatively lower returns or higher risk levels.
+
+
+\begin{center}
+\begin{figure}
+\centering
+\begin{tikzpicture}[
+  node distance = 2cm,
+  auto,
+  block/.style = {rectangle, draw, align=center, minimum width=3cm, minimum height=1cm},
+  decision/.style = {diamond, draw, align=center},
+  line/.style = {draw, -latex}
+]
+
+\node [block] (start) {Start};
+\node [block, below of=start] (index) {Select the Market Index};
+\node [block, below of=index] (pool) {Select the pool of stocks};
+\node [block, below left= of pool, node distance=4cm] (sharpe) {Select top 10 stocks based on \\ Sharpe Ratio};
+\node [block, below right= of pool, node distance=4cm] (sortino) {Select top 10 stocks based on \\ Sortino Ratio};
+\node [block, below of=pool] (intersect) {Common Stocks};
+\node [block, below of=intersect] (data) {Feed the data into mean-variance model};
+\node [block, below of=data] (weights) {Generate optimal weights};
+
+\path [line] (start) -- (index);
+\path [line] (index) -- (pool);
+\path [line] (pool.west) -| (sharpe.north);
+\path [line] (pool.east) -| (sortino.north);
+\path [line] (sharpe.east) |- (intersect.west);
+\path [line] (sortino.west) |- (intersect.east);
+\path [line] (intersect) -- (data);
+\path [line] (data) -- (weights);
+
+\end{tikzpicture}
+\caption{Flowchart}
+\label{fig:flowchart}
+\end{figure}
+\end{center}
