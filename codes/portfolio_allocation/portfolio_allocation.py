@@ -70,7 +70,7 @@ class StockSelection:
     """
 
     NUM_PORTFOLIO = (
-        1000  # Number of random portfolios used to generate Efficient Frontier
+        1000000  # Number of random portfolios used to generate Efficient Frontier
     )
 
     def __init__(
