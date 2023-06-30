@@ -1,0 +1,64 @@
+\addcontentsline{toc}{chapter}{Methodology}
+\chapter*{\hfill Methodology}
+\addcontentsline{toc}{section}{Data Collection}
+\section*{\large{Data Collection}}
+\begin{enumerate}
+    \item \textbf{Data Source}: The historical data of 10 years for this dissertation was collected using the Yahoo Finance API(\href{https://python-yahoofinance.readthedocs.io/en/latest/api.html}{yfinance}), specifically version 0.2.18. This API allowed for retrieving the financial data relevant to the dissertation objectives.
+    \item \textbf{Code Language}: The coding language employed throughout the study is Python (version 3.8). Python provided a robust and versatile platform for conducting research and data analysis.
+    \item \textbf{Data Analysis and Statistical measurements}: For statistical analysis, \href{https://numpy.org/doc/}{Numpy}(version 1.20.3) and \href{https://pandas.pydata.org/docs/}{Pandas}(version 1.5.3) were used. These libraries offered comprehensive functionalities for data manipulation and statistical computations.
+    \item \textbf{Exploratory Data Analysis(EDA)}: \href{https://plotly.com/python/}{Plotly}(version 5.13.0) and Tableau\footnote{Tableau's student version was used, and access to this version was obtained by verifying and substantiating my student status as required by the provider.} were extensively used to generate plots and visualisations. 
+    \item \textbf{Optimisation}: Scipy's \href{https://docs.scipy.org/doc/scipy/reference/optimize.html}{optimisation}\footnote{The \href{SLSPQ}{SLSPQ} algorithm, provided within the optimisation function of the Scipy library, was employed in this study.}(version 1.5.4),  was used to conduct the convex optimisation for the baseline mean-variance model. 
+    \item \textbf{Machine Learning}: For the deployment of ML algorithms, the study will employ \href{https://scikit-learn.org/stable/}{Scikit-learn} library(version 0.23.2). Scikit-learn is widely used by ML practitioners as it provides a comprehensive set of tools for training, evaluating, and deploying ML models.
+\end{enumerate}
+These tools and libraries were carefully selected based on their suitability, reliability, and compatibility with the research objectives and methodologies. Their usage adhered to the terms and conditions of their respective licenses and complied with relevant legal and ethical guidelines.
+\newpage
+\addcontentsline{toc}{section}{Stock Selection}
+\section*{\large{Stock Selection}}
+Here is the overall schematic of the initial stock selection process:
+\begin{center}
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  node distance = 2cm,
+  auto,
+  block/.style = {rectangle, draw, align=center, minimum width=3cm, minimum height=1cm},
+  decision/.style = {diamond, draw, align=center},
+  line/.style = {draw, -latex}
+]
+\node [block] (index) {Select the Market Index};
+\node [block, below of=index] (pool) {Select the pool of stocks};
+\node [block, below left= of pool, node distance=4cm] (sharpe) {Select top 10 stocks based on \\ Sharpe Ratio};
+\node [block, below right= of pool, node distance=4cm] (sortino) {Select top 10 stocks based on \\ Sortino Ratio};
+\node [block, below of=pool] (intersect) {Common Stocks};
+\node [block, below of=intersect] (data) {Feed the data into mean-variance model};
+\node [block, below of=data] (weights) {Generate optimal weights};
+
+\path [line] (index) -- (pool);
+\path [line] (pool.west) -| (sharpe.north);
+\path [line] (pool.east) -| (sortino.north);
+\path [line] (sharpe.east) |- (intersect.west);
+\path [line] (sortino.west) |- (intersect.east);
+\path [line] (intersect) -- (data);
+\path [line] (data) -- (weights);
+
+\end{tikzpicture}
+\caption{Stock Selection Process}
+\label{fig:stock_selection}
+\end{figure}
+\end{center}
+The dissertation's data is acquired from \href{https://www.nseindia.com/}{National Stock Exchange(NSE)}, an Indian stock exchange. The National Stock Exchange is one of the distinguished stock exchanges in India and plays a crucial role in the Indian financial market. Established in 1992, the NSE has emerged as a leading platform for trading several financial instruments, including derivatives, equities, currencies, debt securities, etc. As of 19th June 2023, NSE had over 1,600 actively traded stocks listed on its platform. These stocks represent various sectors and industries, providing investors with myriad investment opportunities. We will be using \href{https://www.nseindia.com/market-data/live-equity-market}{NIFTY 50} for our study. \\\\
+This study employs the usage of \href{https://algotrading101.com/learn/yahoo-finance-api-guide/}{Yahoo Finance API} to gather the data from the NIFTY 50 index. The historical data of 10 years is fed into Markowitz's mean-variance model. The historical returns are used to rank the stocks based on the weighted average of Sharpe (\cite{sharpe1964capital}) and Sortino (\cite{sortino1994downside}) ratios, with more weight assigned to the former. The Sortino ratio is defined by
+\begin{align}
+    S_o = \frac{\mathbb{E}\left[R_p - r_f\right]}{\sigma_d}
+\end{align}
+where, \\
+$S_o$: Sortino Ratio \\
+$R_p$: Portfolio return \\
+$r_f$: Risk free return \\
+$\sigma_d$: Standard deviation of downside \\\\
+The stocks included in this study represent the intersection of the top-performing stocks, as determined by their Sharpe Ratio and Sortino Ratio. This approach ensures that only the most favorable stocks, exhibiting strong risk-adjusted performance, are considered for analysis.
+\input{Methodology/eda}
+
+\newpage
+\input{Methodology/keyfindings}
+

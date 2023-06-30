@@ -1,0 +1,95 @@
+\addcontentsline{toc}{section}{XGBoost}
+\newpage
+\section*{\large{XGBoost}\footnote{The content in this subsection draws extensively on the research presented in `XGBoost: A Scalable Tree Boosting System', a paper by Chen and Guestrin published in the proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, pages 785-794 \citep{Chen_2016}}}
+\addcontentsline{toc}{subsection}{Introduction to XGBoost and Similar Literature}
+\subsection*{\small{Introduction to XGBoost and Similar Literature}}
+XGBoost, short for Extreme Gradient Boosting, is a powerful ML algorithm that has gained significant popularity among machine learning practitioners due to its remarkable success in various predictive modelling tasks. It is an advancement of gradient boosting, a technique that utilises multiple weak models to create a robust ensemble model. Here are some key features of the XGBoost Model.
+\begin{enumerate}
+    \item \textbf{Gradient Boosting}: XGBoost utilises the gradient boosting decision tree algorithm to construct new trees that predict and correct the residuals, reducing the misclassification rate.
+    \item \textbf{Regularisation}: XGBoost has a regularisation term in its objective function to control the overall complexity of the model, reducing overfitting.
+    \item \textbf{Null value awareness}: XGBoost utilises a sparsity-aware algorithm to handle sparse and missing data points. It automatically learns the best direction to handle the missing values.
+    \item \textbf{Parallel Processing}: XGBoost is designed to perform \href{https://www.techtarget.com/searchdatacenter/definition/parallel-processing}{parallel processing}. This feature makes computation faster than other boosting algorithms.
+    \item \textbf{Flexibility}: XGBoost algorithm allows users to define their custom optimisation objectives and evaluation criteria, adding flexibility for the user.
+    \item \textbf{Continued Training}: The practitioner can start training an XGBoost model from its previous iteration, allowing them to tweak the portfolio weights when real-time dynamic data is incorporated from the stock market.
+\end{enumerate}
+Presently, there are many studies conducted where researchers utilised the XGBoost algorithm extensively in the domain of portfolio optimisation. A study conducted by (\cite{DEZHKAM2023105626}) used the combination of Hilbert-Huang Transformation (\href{https://en.wikipedia.org/wiki/Hilbert\%E2\%80\%93Huang_transform}{HHT}) and XGBoost to perform feature engineering and close price trend classification respectively. The classification outputs were used to balance the portfolio weights based on the trend. The performance of the portfolios under the combination of HHT and XGBoost performed 99.8\% better than the portfolio utilising raw financial data (\cite{DEZHKAM2023105626}). Another research conducted by (\cite{Wang2022}) used XGBoost to select the best stocks. Factors such as trade volume, the adjusted closing price of three days, and the difference between high and low prices were taken as features, with the highest importance given to the adjusted closing price of three days. The evaluation metrics used for tuning the model were \href{https://en.wikipedia.org/wiki/Root-mean-square_deviation}{RMSE} and \href{https://en.wikipedia.org/wiki/Mean_absolute_percentage_error}{MAPE}. The selected stock returns were fed into the mean-variance model to optimise the Sharpe ratio (\cite{Wang2022}).
+\addcontentsline{toc}{subsection}{Mathematics behind XGBoost}
+\subsection*{\small{Mathematics behind XGBoost}}
+Before delving into the mathematical aspects, here are the notations of this section that are pertinent to the mathematical framework of XGBoost.
+\begin{enumerate}
+    \item \textbf{Tree}: A tree implies a decision tree, mainly used to generate predictive models. It is a hierarchical structure of nodes and branches, representing a series of binary decisions before making the final decision.
+    \item \textbf{Node}: A node is a particular point in a tree where a binary decision is made based on a specific feature and its corresponding threshold.
+    \item \textbf{Leaf}: A leaf is the terminal node of a decision tree, where a specific outcome or class label is generated based on the outcomes of the preceding nodes.
+    \item \textbf{Loss function}: A loss function, also known as cost function, is a method of evaluating how well an algorithm models the data. 
+    \item \textbf{Gradient}: Gradient refers to a partial derivative of a loss function with respect to the predicted values. It represents the direction and the magnitude of the descent in the context of the loss function.
+    \item \textbf{Hessian}: Hessian refers to the second partial derivative of the loss function with respect to the predicted values. 
+    \item \textbf{Ensemble}: An ensemble method combines the outputs from multiple models to improve the overall performance and accuracy, reducing the possibility of poor selection due to individual model biases or variance.
+        
+\end{enumerate}
+Let $\mathcal{D}$ be the given dataset with $m$ examples and $n$ features, each example represented as a pair $(x_i, y_i)$, where $x_i \in \mathrm{R^n}$ and $y_i \in \mathrm{R}$. A tree ensemble model uses K additive functions to predict the output.
+\begin{align}
+    \label{eq:prediction_xgb}
+    \hat{y} = \phi(x_i) = \sum_{k=1}^K f_k\left(x_i\right), \quad f_k \in \mathcal{F}
+\end{align}
+where $\mathcal{F} = \{f(x) = w_{q(x)}\}$, $(q: \mathrm{R^m} \rightarrow T, \quad w \in \mathrm{R^T})$ is the \href{https://en.wikipedia.org/wiki/\%CE\%A3-algebra}{sigma-algebra} of the regression trees, also known as \href{https://machinelearningmastery.com/classification-and-regression-trees-for-machine-learning/}{CART}. Here, $q$ represents the structure of each tree that maps to the corresponding index of the leaf. Here, T is the number of leaves. Each $f_k$  maps an independent tree structure $q$ and weights $w$. \\
+To learn the set of functions fed to the model, the main objective becomes the minimisation of the following function (regularisation objective).
+\begin{align}
+    \label{eq: regularisation_function}
+    \mathcal{L}\left(\phi\right) = \underbrace{\sum_i L\left(\hat{y_i}, y_i\right)}_{\text{Residual error}} + \underbrace{\sum_k \Omega \left(f_k\right)}_{\text{Cost function}}
+    \qquad
+\end{align}
+where,
+\begin{align}
+    \label{eq:cost_function}
+    \Omega\left(f\right) = \gamma T + \frac{1}{2} \lambda \|w\|^2
+\end{align}
+Here, $L$ is a continuous-differentiable convex loss function that evaluates the difference between the predicted value $\hat{y_i}$ and the actual value $y_i$. The term $\Omega$ is used to penalise the complexity of the model. The additional regularisation term is used to smooth the final learnt weights to avoid overfitting. $\gamma$ is the minimum loss reduction required to make a further partition on a leaf node of the tree. It is used to prune unnecessary splits. $\lambda$ is used as for \href{https://developers.google.com/machine-learning/crash-course/regularization-for-simplicity/l2-regularization}{L2} regularisation metric on the weights of the tree. \\\\
+The tree ensemble model presented in equations \ref{eq: regularisation_function} and \ref{eq:cost_function} include functions as parameters that cannot be optimised using the traditional optimisation methods in the Euclidean space. Since XGBoost is a tree-based model, the parameters are not continuous\footnote{In the context of decision tree models, parameters not considered as continuous imply that small changes in these parameters do not lead to small changes in the model's output.} and traditional converging optimisation methods cannot be used. To overcome this challenge, gradient boosting is used. XGBoost uses gradient boosting to train the individual trees iteratively, where each new tree tries to correct the mistakes of the previous ones. \\\\
+Let $\hat{y}^{(t)}_i$ be the $i^{th}$ instance of the $t^{th}$ iteration and using $f_t$ to minimise the following objective.
+\begin{align}
+    \label{eq:GB_optimisation}
+    \mathcal{L}^{(t)} = \sum_{i=1}^n L\left(y_i, \hat{y}^{(t-1)}_i + f_t \left(x_i\right)\right) + \Omega \left(f_t\right)
+\end{align}
+Here, $f_t$ acts as a greedy parameter that improves the algorithm according to the equations \ref{eq: regularisation_function} and \ref{eq:cost_function}. Performing second-order approximation of equation \ref{eq:GB_optimisation} leads to
+\begin{align}
+    \label{eq:second_order_approx}
+    \mathcal{L}^{\left(t\right)} &\approx \sum_{i=1}^n \left[\underbrace{L(y_i, \hat{y}^{(t-1)}_i)}_{\text{constant}} + {g_i f_t(x_i)} + \frac{1}{2} h_i f_t^2(x_i)\right] + \Omega (f_t)
+\end{align}
+where,
+\begin{align}
+    \label{eq:gradient}
+    g_i = \frac{\partial}{\partial \hat{y}^{(t-1)}}{L(y_i, \hat{y}^{(t-1)}_i)}
+\end{align}
+\begin{align}
+    \label{eq:hessian}
+    h_i =  \frac{\partial}{\partial \hat{y}^{(t-1)}} g_i
+\end{align}
+The equations \ref{eq:gradient} and \ref{eq:hessian} are the first derivative(gradient) and second derivative(hessian) of the cost function respectively. We remove the constant\footnote{The term $L(y_i, \hat{y_i}^{t-1})$ is considered ``constant" not because its value doesn't change, but because its value does not depend on the new tree.} terms to obtain the following equation
+\begin{align}
+    \label{eq:simplified_obj_fucntion}
+    \Tilde{\mathcal{L}}^{(t)} = \sum_{i=1}^n \left[{g_i f_t(x_i)} + \frac{1}{2} h_i f_t^2(x_i)\right] + \Omega (f_t)
+\end{align}
+Let $I_j = \{i|q(x_i) = j\}$ be an instance of leaf $j$. Equation \ref{eq:simplified_obj_fucntion} after expanding $\Omega$ can be written as
+\begin{align}
+    \label{eq:updated_cost_function}
+    \Tilde{\mathcal{L}}^{(t)} = \sum_{j=1}^{T}\left[(\sum_{i \in I_j} g_i)w_j + \frac{1}{2}(\sum_{i \in I_j} h_i + \lambda)w_j^2\right] + \gamma T
+\end{align}
+The optimal weight is derived by minimizing the equation \ref{eq:updated_cost_function} w.r.t. $w_j$. The optimal weight ($w_j^*$) of the leaf $j$  can be computed as
+\begin{gather*}
+    \frac{\partial}{\partial w_j} \Tilde{\mathcal{L}}^{(t)} = 0 \\
+    \implies \frac{\partial}{\partial w_j} \left\{\sum_{j=1}^{T}\left[(\sum_{i \in I_j} g_i)w_j + \frac{1}{2}(\sum_{i \in I_j} h_i + \lambda)w_j^2\right] + \gamma T\right\} = 0 \\\\
+    \implies (\sum_{i \in I_j} g_i) + (\sum_{i \in I_j} h_i + \lambda)w_j^* = 0 
+\end{gather*}
+\begin{align}
+    \label{eq: Optimal weight}
+    \therefore w_j^* = - \frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}
+\end{align}
+and the optimal value is calculated by substituting equation \ref{eq: Optimal weight} in equation \ref{eq:updated_cost_function}
+\begin{align}
+    \label{eq: optimal value}
+    \Tilde{\mathcal{L}}^{(t)}(q) = - \frac{1}{2} \sum_{j=1}^{T} \frac{(\sum_{i \in I_j g_i})^2}{\sum_{i \in I_j} + \lambda} + \gamma T 
+\end{align}
+Equation \ref{eq: optimal value} can be utilised as an evaluation function to measure the quality of the tree structure $q$. This score is similar to the impurity score used to evaluate decision trees, except that it is derived for a broader range of objective functions\footnote{I would like to express my gratitude to Josh Starmer for his valuable explanations of the XGBoost algorithm in his \href{https://www.youtube.com/@statquest}{StatQuest} YouTube channel. His videos have greatly helped me in understanding and explaining this algorithm.
+}.
+
+

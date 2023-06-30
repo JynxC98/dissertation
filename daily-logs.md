@@ -1,8 +1,11 @@
 # Daily logs to record the progress
-### 28th June
+### 28th and 29th June
 1. Finished reading
-   - Dynamic portfolio rebalancing through reinforcement learning
-   - 
+   - Dynamic portfolio rebalancing through reinforcement learning.
+   - Decision Support Using Machine Learning Indication for
+Financial Investment.
+2. Finished a coursera course on [porfolio risk management.](https://www.coursera.org/programs/70631bd8-6a88-4d71-82f9-de084b8c26b1?currentTab=MY_COURSES&productId=lVrbSnKzEeWIfhKr_WcYsQ&productType=course&showMiniModal=true)
+ 
 
 ### 27th June
 1. Sick leave

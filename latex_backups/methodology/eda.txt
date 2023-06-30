@@ -1,0 +1,80 @@
+\addcontentsline{toc}{section}{Exploratory Data Analysis}
+\section*{\large Exploratory Data Analysis}
+These stocks were selected using the methodology outlined in Figure \ref{fig:stock_selection}, and their corresponding Sharpe and Sortino Ratios are presented below.
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|r|r|}
+\hline
+\textbf{Ticker} & \textbf{Sharpe Ratio} & \textbf{Sortino Ratio} \\
+\hline
+BAJFINANCE.NS  & 1.079519     & 1.819494  \\
+BRITANNIA.NS   & 0.997274     & 1.791131  \\
+ADANIENT.NS    & 0.989250     & 1.625787  \\
+BAJAJFINSV.NS  & 0.921565     & 1.558132  \\
+TITAN.NS       & 0.779165     & 1.364510  \\
+JSWSTEEL.NS    & 0.743176     & 1.247523  \\
+EICHERMOT.NS   & 0.720085     & 1.285268  \\
+ASIANPAINT.NS  & 0.665725     & 1.136649  \\
+\hline
+\end{tabular}
+\caption{Top 10 stocks based on KPI}
+\label{tab:top_10_stocks}
+\end{table}
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{|l|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{Ticker}          & \textbf{Count} & \textbf{Mean}     & \textbf{Std}      & \textbf{Min}       & \textbf{25\%}      & \textbf{50\%}      & \textbf{75\%}      & \textbf{Max}       \\ \hline
+BAJFINANCE.NS   & 2464  & 0.001896 & 0.023801 & -0.232308 & -0.009366 & 0.000948  & 0.012951  & 0.110052  \\
+BRITANNIA.NS    & 2464  & 0.001309 & 0.016416 & -0.133702 & -0.007145 & 0.000410  & 0.009227  & 0.106639  \\
+ADANIENT.NS     & 2464  & 0.002438 & 0.034667 & -0.387493 & -0.012438 & 0.001833  & 0.016773  & 0.273680  \\
+BAJAJFINSV.NS   & 2464  & 0.001524 & 0.021466 & -0.258621 & -0.009593 & 0.000596  & 0.011721  & 0.114534  \\
+TITAN.NS        & 2464  & 0.001269 & 0.020205 & -0.122560 & -0.008970 & 0.000715  & 0.010510  & 0.187874  \\
+JSWSTEEL.NS     & 2464  & 0.001334 & 0.022572 & -0.178378 & -0.011301 & 0.001115  & 0.013703  & 0.123667  \\
+EICHERMOT.NS    & 2464  & 0.001224 & 0.020863 & -0.125813 & -0.010493 & 0.000246  & 0.011677  & 0.133801  \\
+ASIANPAINT.NS   & 2464  & 0.000979 & 0.016723 & -0.140279 & -0.007907 & 0.000531  & 0.009783  & 0.088527  \\
+\hline
+\end{tabular}
+    \caption{Statistics for Stocks}
+    \label{tab:statistics_of_returns}
+\end{table}
+\noindent
+\newline
+The table \ref{tab:statistics_of_returns} represents the statistical analysis\footnote{The values here are in absolute terms.} of daily returns for ten different stocks over a period of 2464 observations. It is observed that
+\begin{enumerate}
+    \item The stock with highest daily mean return is ADANIENT.NS at 0.02438, while HCLTECH.NS is the lowest at 0.00967.
+    \item In terms of volatility, ADANIENT.NS has the highest standard deviation (0.034667), indicating the highest risk, while BRITANNIA.NS is the least volatile stock with the least standard deviation (0.016416).
+    \item The stock ADANIENT.NS registered the highest single-day loss (-0.387493), while TATASTEEL.NS recorded the highest single-day gain (1.005783).
+    \item The stock with the greatest median return is ADANIENT.NS, suggesting it typically had better daily returns compared to the others.
+\end{enumerate}
+\newpage
+\begin{table}[h]
+\centering
+\small
+\scalebox{0.63}{
+\begin{tabular}{|l|r|r|r|r|r|r|r|r|}
+\hline
+{} &  TITAN.NS &  ASIANPAINT.NS &  JSWSTEEL.NS &  BAJFINANCE.NS &  BRITANNIA.NS &  EICHERMOT.NS &  BAJAJFINSV.NS &  ADANIENT.NS \\
+\hline
+TITAN.NS      &  1.000000 &       0.315928 &     0.304948 &       0.309450 &      0.239209 &      0.290146 &       0.316990 &     0.231784 \\
+ASIANPAINT.NS &  0.315928 &       1.000000 &     0.291288 &       0.322985 &      0.297974 &      0.326781 &       0.321329 &     0.223158 \\
+JSWSTEEL.NS   &  0.304948 &       0.291288 &     1.000000 &       0.363605 &      0.218820 &      0.305332 &       0.388807 &     0.354925 \\
+BAJFINANCE.NS &  0.309450 &       0.322985 &     0.363605 &       1.000000 &      0.286275 &      0.370248 &       0.651148 &     0.298211 \\
+BRITANNIA.NS  &  0.239209 &       0.297974 &     0.218820 &       0.286275 &      1.000000 &      0.289389 &       0.306696 &     0.187122 \\
+EICHERMOT.NS  &  0.290146 &       0.326781 &     0.305332 &       0.370248 &      0.289389 &      1.000000 &       0.354611 &     0.228370 \\
+BAJAJFINSV.NS &  0.316990 &       0.321329 &     0.388807 &       0.651148 &      0.306696 &      0.354611 &       1.000000 &     0.304326 \\
+ADANIENT.NS   &  0.231784 &       0.223158 &     0.354925 &       0.298211 &      0.187122 &      0.228370 &       0.304326 &     1.000000 \\
+\hline
+\end{tabular}}
+\caption{Correlation between the stocks}
+\label{tab:correlation}
+\end{table}
+\noindent
+The table \ref{tab:correlation} represents the pairwise correlation coefficients between the returns of eight stocks listed on the National Stock Exchange of India (NSE): TITAN.NS, ASIANPAINT.NS, JSWSTEEL.NS, BAJFINANCE.NS, BRITANNIA.NS, EICHERMOT.NS, BAJAJFINSV.NS, and ADANIENT.NS.
+\begin{enumerate}
+    \item Most stocks seem to have moderate positive correlation coefficients with each other, suggesting that their returns often move in the same direction but not always at the same magnitude or rate.
+    \item Each stock has a correlation coefficient of 1 with itself, as expected.
+    \item The stock pair BAJFINANCE.NS and BAJAJFINSV.NS has the highest correlation (0.651148), suggesting that their returns have moved in a similar direction to a greater extent when compared to other pairs.
+    \item The stock pair ADANIENT.NS and BRITANNIA.NS has the lowest correlation (0.1871), indicating that their returns have the least common directional movement compared to other pairs.
+\end{enumerate}
