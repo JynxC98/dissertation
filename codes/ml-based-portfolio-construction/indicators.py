@@ -14,53 +14,100 @@ from typing import Type
 import pandas as pd
 
 
-class FeatureEngineering:
+class TechnicalIndicatorGenerator:
     """
-    Class to generate several technical indicators and \\
-    direction signal based on the stock data. \\
-    The class calculates the following indicators: \\
-    MACD, ATR, Bollinger Band, RSI, ADX, RENKO 
-    
-    Input parameters
-    ----------------
-    data: Historical data of the stocks
-
+    Class to generate various technical indicators and direction signals based on stock data.
+    The class calculates the following technical indicators: MACD, ATR, Bollinger Bands, RSI, ADX, and Renko.
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Historical data of the stock obtained from the yfinance API.
     Returns
     -------
-    Technical indicators
-    
+    pandas.DataFrame
+        DataFrame containing the technical indicators as features for the given stock data.
+    Notes
+    -----
+    This class is designed to perform feature engineering by generating multiple technical indicators
+    from the historical stock data. These indicators can be used as input features for training an
+    XGBoost classification model or any other machine learning model.
+
+    Example usage:
+    --------------
+    >>> data = yf.download("AAPL", start="2021-01-01", end="2021-12-31")
+    >>> indicator_generator = TechnicalIndicatorGenerator()
+    >>> indicators = indicator_generator.generate_indicators(data)
+    References:
+    -----------
+    [1] MACD:
+
     """
 
     def __init__(self, data: Type[pd.DataFrame]) -> None:
         self.data = data
 
+    def moving_average_convergence_divergence(self, fast=12, slow=26, signal=9):
+        """
+        MACD (Moving Average Convergence Divergence) Indicator
 
-def moving_average_convergence_divergence(data, fast=12, slow=26, signal=9):
-    """function to calculate MACD
-    typical values a(fast moving average) = 12;
-                   b(slow moving average) =26;
-                   c(signal line ma window) =9"""
-    data["ma_fast"] = data["Adj Close"].ewm(span=fast, min_periods=fast).mean()
-    data["ma_slow"] = data["Adj Close"].ewm(span=slow, min_periods=slow).mean()
-    data["macd"] = data["ma_fast"] - data["ma_slow"]
-    data["signal"] = data["macd"].ewm(span=signal, min_periods=signal).mean()
-    return data.loc[:, ["macd", "signal"]]
+        The MACD indicator is a popular technical
+        analysis tool used to identify potential buying and selling opportunities
+        in financial markets. It is based on the convergence and divergence of two moving averages,
+        typically the 12-day Exponential Moving Average (EMA) and the 26-day EMA.
+
+        Parameters
+        ----------
+        data: Historical price data of the asset.
+        fast: 12-day EMA
+        slow: 26-day EMA
+
+        Returns
+        -------
+        DataFrame containing the MACD data.
+        """
+
+        data = self.data.copy()
+        data["ma_fast"] = data["Close"].ewm(span=fast, min_periods=fast).mean()
+        data["ma_slow"] = data["Close"].ewm(span=slow, min_periods=slow).mean()
+        data["macd"] = data["ma_fast"] - data["ma_slow"]
+        data["signal"] = data["macd"].ewm(span=signal, min_periods=signal).mean()
+        return data
+
+    def average_true_range(self, num_days=14):
+        "function to calculate True Range and Average True Range"
+
+        data = self.moving_average_convergence_divergence()
+
+        data["H-L"] = data["High"] - data["Low"]
+        data["H-PC"] = abs(data["High"] - data["Adj Close"].shift(1))
+        data["L-PC"] = abs(data["Low"] - data["Adj Close"].shift(1))
+        data["TR"] = data[["H-L", "H-PC", "L-PC"]].max(axis=1, skipna=False)
+        data["ATR"] = data["TR"].ewm(com=num_days, min_periods=num_days).mean()
+        return data
+
+    def bollinger_band(self, num_days=14):
+        "function to calculate Bollinger Band"
+        data = self.average_true_range()
+        data["middle_band"] = data["Adj Close"].rolling(num_days).mean()
+        data["upper_band"] = data["middle_band"] + 2 * data["Adj Close"].rolling(
+            num_days
+        ).std(ddof=0)
+        data["lower_band"] = data["middle_band"] - 2 * data["Adj Close"].rolling(
+            num_days
+        ).std(ddof=0)
+        data["BB_Width"] = data["upper_band"] - data["lower_band"]
+        return data.drop(["middle_band", "upper_band", "lower_band"], 1)
 
 
-def average_true_range(data, num_days=14):
-    "function to calculate True Range and Average True Range"
-    data["H-L"] = data["High"] - data["Low"]
-    data["H-PC"] = abs(data["High"] - data["Adj Close"].shift(1))
-    data["L-PC"] = abs(data["Low"] - data["Adj Close"].shift(1))
-    data["TR"] = data[["H-L", "H-PC", "L-PC"]].max(axis=1, skipna=False)
-    data["ATR"] = data["TR"].ewm(com=num_days, min_periods=num_days).mean()
-    return data["ATR"]
-
-
-def bollinger_band(data, n=14):
-    "function to calculate Bollinger Band"
-    data["MB"] = data["Adj Close"].rolling(n).mean()
-    data["UB"] = data["MB"] + 2 * data["Adj Close"].rolling(n).std(ddof=0)
-    data["LB"] = data["MB"] - 2 * data["Adj Close"].rolling(n).std(ddof=0)
-    data["BB_Width"] = data["UB"] - data["LB"]
-    return data[["MB", "UB", "LB", "BB_Width"]]
+# def ADX(DF, n=20):
+#     "function to calculate ADX"
+#     df = DF.copy()
+#     df["ATR"] = ATR(DF, n)
+#     df["upmove"] = df["High"] - df["High"].shift(1)
+#     df["downmove"] = df["Low"].shift(1) - df["Low"]
+#     df["+dm"] = np.where((df["upmove"]>df["downmove"]) & (df["upmove"] >0), df["upmove"], 0)
+#     df["-dm"] = np.where((df["downmove"]>df["upmove"]) & (df["downmove"] >0), df["downmove"], 0)
+#     df["+di"] = 100 * (df["+dm"]/df["ATR"]).ewm(alpha=1/n, min_periods=n).mean()
+#     df["-di"] = 100 * (df["-dm"]/df["ATR"]).ewm(alpha=1/n, min_periods=n).mean()
+#     df["ADX"] = 100* abs((df["+di"] - df["-di"])/(df["+di"] + df["-di"])).ewm(alpha=1/n, min_periods=n).mean()
+#     return df["ADX"]
