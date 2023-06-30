@@ -1,5 +1,15 @@
 # Daily logs to record the progress
-22nd - 24th June
+### 28th June
+1. Finished reading
+   - Dynamic portfolio rebalancing through reinforcement learning
+   - 
+
+### 27th June
+1. Sick leave
+### 26th June
+1. Supervisor meeting
+2. Implemented all the suggestions made by the supervisor
+### 22nd - 24th June
 1. Worked on Literature review and completed the first draft.
 2. Started watching videos on technical indicators.
 ### 20th June and 21st June

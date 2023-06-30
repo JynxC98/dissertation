@@ -118,7 +118,7 @@ class StockSelection:
             stock_data[stock] = ticker.history(
                 start=self.start_date, end=self.end_date
             )["Close"]
-        return pd.DataFrame(stock_data).dropna(axis=1)
+        return pd.DataFrame(stock_data).dropna(axis=1, thresh=2000)
 
     def calculate_returns(self) -> pd.DataFrame:
         """
