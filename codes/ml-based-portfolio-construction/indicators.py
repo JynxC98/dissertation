@@ -12,6 +12,7 @@ url: https://www.udemy.com/course/algorithmic-trading-quantitative-analysis-usin
 """
 from typing import Type
 import pandas as pd
+import numpy as np
 
 
 class TechnicalIndicatorGenerator:
@@ -79,8 +80,8 @@ class TechnicalIndicatorGenerator:
         data = self.moving_average_convergence_divergence()
 
         data["H-L"] = data["High"] - data["Low"]
-        data["H-PC"] = abs(data["High"] - data["Adj Close"].shift(1))
-        data["L-PC"] = abs(data["Low"] - data["Adj Close"].shift(1))
+        data["H-PC"] = abs(data["High"] - data["Close"].shift(1))
+        data["L-PC"] = abs(data["Low"] - data["Close"].shift(1))
         data["TR"] = data[["H-L", "H-PC", "L-PC"]].max(axis=1, skipna=False)
         data["ATR"] = data["TR"].ewm(com=num_days, min_periods=num_days).mean()
         return data
@@ -88,26 +89,42 @@ class TechnicalIndicatorGenerator:
     def bollinger_band(self, num_days=14):
         "function to calculate Bollinger Band"
         data = self.average_true_range()
-        data["middle_band"] = data["Adj Close"].rolling(num_days).mean()
-        data["upper_band"] = data["middle_band"] + 2 * data["Adj Close"].rolling(
+        data["middle_band"] = data["Close"].rolling(num_days).mean()
+        data["upper_band"] = data["middle_band"] + 2 * data["Close"].rolling(
             num_days
         ).std(ddof=0)
-        data["lower_band"] = data["middle_band"] - 2 * data["Adj Close"].rolling(
+        data["lower_band"] = data["middle_band"] - 2 * data["Close"].rolling(
             num_days
         ).std(ddof=0)
         data["BB_Width"] = data["upper_band"] - data["lower_band"]
         return data.drop(["middle_band", "upper_band", "lower_band"], 1)
 
-
-# def ADX(DF, n=20):
-#     "function to calculate ADX"
-#     df = DF.copy()
-#     df["ATR"] = ATR(DF, n)
-#     df["upmove"] = df["High"] - df["High"].shift(1)
-#     df["downmove"] = df["Low"].shift(1) - df["Low"]
-#     df["+dm"] = np.where((df["upmove"]>df["downmove"]) & (df["upmove"] >0), df["upmove"], 0)
-#     df["-dm"] = np.where((df["downmove"]>df["upmove"]) & (df["downmove"] >0), df["downmove"], 0)
-#     df["+di"] = 100 * (df["+dm"]/df["ATR"]).ewm(alpha=1/n, min_periods=n).mean()
-#     df["-di"] = 100 * (df["-dm"]/df["ATR"]).ewm(alpha=1/n, min_periods=n).mean()
-#     df["ADX"] = 100* abs((df["+di"] - df["-di"])/(df["+di"] + df["-di"])).ewm(alpha=1/n, min_periods=n).mean()
-#     return df["ADX"]
+    def ADX(self, n=20):
+        "function to calculate ADX"
+        data = self.bollinger_band()
+        data = data.copy()
+        data["upmove"] = data["High"] - data["High"].shift(1)
+        data["downmove"] = data["Low"].shift(1) - data["Low"]
+        data["+dm"] = np.where(
+            (data["upmove"] > data["downmove"]) & (data["upmove"] > 0),
+            data["upmove"],
+            0,
+        )
+        data["-dm"] = np.where(
+            (data["downmove"] > data["upmove"]) & (data["downmove"] > 0),
+            data["downmove"],
+            0,
+        )
+        data["+di"] = (
+            100 * (data["+dm"] / data["ATR"]).ewm(alpha=1 / n, min_periods=n).mean()
+        )
+        data["-di"] = (
+            100 * (data["-dm"] / data["ATR"]).ewm(alpha=1 / n, min_periods=n).mean()
+        )
+        data["ADX"] = (
+            100
+            * abs((data["+di"] - data["-di"]) / (data["+di"] + data["-di"]))
+            .ewm(alpha=1 / n, min_periods=n)
+            .mean()
+        )
+        return data
