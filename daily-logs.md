@@ -1,10 +1,29 @@
 # Daily logs to record the progress
+### 3rd and 4th July
+1. Finished reading
+   - A hybrid stock trading framework integrating technical analysis with
+machine learning techniques.
+   - Technical analysis strategy optimization using a machine learning
+approach in stock market indices.
+   - Performance analysis of the integration between Portfolio Optimization and Technical Analysis strategies in the Brazilian stock market
+   - Predicting the direction of stock market prices using tree-based classifiers.
+   - Investment strategies using technical analysis & predictive modelling in emerging markets.
+   - A decision tree-rough set hybrid system for stock market trend prediction.
+
+2. 
+
+### 2nd July
+1. Break
+### 30th June and 1st July
+1. Finished coding the indicators.
+2. Started a new course on [portfolio management](https://www.coursera.org/programs/70631bd8-6a88-4d71-82f9-de084b8c26b1?currentTab=MY_COURSES&productId=qeyXSV_uEeiNIQqyU-T6bA&productType=course&showMiniModal=true)
+
 ### 28th and 29th June
 1. Finished reading
    - Dynamic portfolio rebalancing through reinforcement learning.
    - Decision Support Using Machine Learning Indication for
 Financial Investment.
-2. Finished a coursera course on [porfolio risk management.](https://www.coursera.org/programs/70631bd8-6a88-4d71-82f9-de084b8c26b1?currentTab=MY_COURSES&productId=lVrbSnKzEeWIfhKr_WcYsQ&productType=course&showMiniModal=true)
+1. Finished a coursera course on [porfolio risk management.](https://www.coursera.org/programs/70631bd8-6a88-4d71-82f9-de084b8c26b1?currentTab=MY_COURSES&productId=lVrbSnKzEeWIfhKr_WcYsQ&productType=course&showMiniModal=true)
  
 
 ### 27th June
