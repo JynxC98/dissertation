@@ -1,4 +1,14 @@
 # Daily logs to record the progress
+### 6th July and 7th July
+1. Finished coding technical indicators
+2. Studied about martingales and geometric brownian motion
+3. Researched about Expected Shortfall and VaR modelling
+4. Coded the first ML based prediction model(XGBoost)
+### 5th July
+1. Finished module 2 of MOOC portfolio management
+2. Finished reading
+   - Optimal Hedging with Options and Futures against Price Risk and Background Risk
+   - FIGHT OR FLIGHT? PORTFOLIO REBALANCING BY INDIVIDUAL INVESTORS∗
 ### 3rd and 4th July
 1. Finished reading
    - A hybrid stock trading framework integrating technical analysis with
@@ -10,7 +20,6 @@ approach in stock market indices.
    - Investment strategies using technical analysis & predictive modelling in emerging markets.
    - A decision tree-rough set hybrid system for stock market trend prediction.
 
-2. 
 
 ### 2nd July
 1. Break

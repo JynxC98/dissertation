@@ -1,14 +1,11 @@
 """
-Scipt used to generate technical indicators and signals 
-for buying, selling the stock.
+Script used to generate technical indicators and signals for buying, selling the stock.
 
-The codes for this section are referred from the following Udemy Course
+The codes for this section are referred from the following Udemy Course:
 
-```
 Instructor: Mayank Rasu
 Course Title: Algorithmic Trading and Quantitative Analysis using python
 url: https://www.udemy.com/course/algorithmic-trading-quantitative-analysis-using-python/
-
 """
 from typing import Type
 import pandas as pd
@@ -19,89 +16,107 @@ class TechnicalIndicatorGenerator:
     """
     Class to generate various technical indicators and direction signals based on stock data.
     The class calculates the following technical indicators: MACD, ATR, Bollinger Bands, RSI, ADX, and Renko.
+
     Parameters
     ----------
     data : pandas.DataFrame
         Historical data of the stock obtained from the yfinance API.
+
     Returns
     -------
     pandas.DataFrame
         DataFrame containing the technical indicators as features for the given stock data.
+
     Notes
     -----
     This class is designed to perform feature engineering by generating multiple technical indicators
     from the historical stock data. These indicators can be used as input features for training an
     XGBoost classification model or any other machine learning model.
-
-    Example usage:
-    --------------
-    >>> data = yf.download("AAPL", start="2021-01-01", end="2021-12-31")
-    >>> indicator_generator = TechnicalIndicatorGenerator()
-    >>> indicators = indicator_generator.generate_indicators(data)
-    References:
-    -----------
-    [1] MACD:
-
     """
 
     def __init__(self, data: Type[pd.DataFrame]) -> None:
         self.data = data
 
+    def calculate_moving_average(self, period=14) -> Type[pd.DataFrame]:
+        """
+        Calculates the moving average of the stock prices.
+
+        Parameters
+        ----------
+        period: int, optional
+            Default value is 14 days
+
+        Returns
+        -------
+        pandas.DataFrame
+            DataFrame with moving average data added
+        """
+        data = self.data.copy()
+        data["moving_average"] = data["Close"].rolling(window=period).mean()
+        return data
+
     def moving_average_convergence_divergence(self, fast=12, slow=26, signal=9):
         """
-        MACD (Moving Average Convergence Divergence) Indicator
+        Calculate the MACD (Moving Average Convergence Divergence) Indicator.
 
-        The MACD indicator is a popular technical
-        analysis tool used to identify potential buying and selling opportunities
-        in financial markets. It is based on the convergence and divergence of two moving averages,
+        The MACD indicator is a popular technical analysis tool used to identify potential buying and selling
+        opportunities in financial markets. It is based on the convergence and divergence of two moving averages,
         typically the 12-day Exponential Moving Average (EMA) and the 26-day EMA.
 
         Parameters
         ----------
-        data: Historical price data of the asset.
-        fast: 12-day EMA
-        slow: 26-day EMA
+        fast : int, optional
+            Period for the faster EMA, default is 12.
+        slow : int, optional
+            Period for the slower EMA, default is 26.
+        signal : int, optional
+            Period for the signal line, default is 9.
 
         Returns
         -------
-        DataFrame containing the MACD data.
-        """
+        pandas.DataFrame
+            DataFrame with market_type related data added.
+            market_type: 1 if macd > signal (Indicating bullish phase)
+            market_type: 0 if macd < signal (Bearish Phase)
 
-        data = self.data.copy()
+        """
+        data = self.calculate_moving_average()
         data["ma_fast"] = data["Close"].ewm(span=fast, min_periods=fast).mean()
         data["ma_slow"] = data["Close"].ewm(span=slow, min_periods=slow).mean()
         data["macd"] = data["ma_fast"] - data["ma_slow"]
         data["signal"] = data["macd"].ewm(span=signal, min_periods=signal).mean()
-        return data
+        data["market_type"] = np.where(data["macd"] > data["signal"], 1, 0)
+        return data.drop(["ma_fast", "ma_slow", "signal", "macd"], 1)
 
-    def average_true_range(self, num_days=14):
-        "function to calculate True Range and Average True Range"
+    def RSI(self, n=14):
+        """
+        Calculates the RSI
 
+        Returns
+        -------
+        pandas.DataFrame
+            DataFrame with RSI added.
+        """
         data = self.moving_average_convergence_divergence()
+        data["change"] = data["Close"] - data["Close"].shift(1)
+        data["gain"] = np.where(data["change"] >= 0, data["change"], 0)
+        data["loss"] = np.where(data["change"] < 0, -1 * data["change"], 0)
+        data["avgGain"] = data["gain"].ewm(alpha=1 / n, min_periods=n).mean()
+        data["avgLoss"] = data["loss"].ewm(alpha=1 / n, min_periods=n).mean()
+        data["rs"] = data["avgGain"] / data["avgLoss"]
+        data["rsi"] = 100 - (100 / (1 + data["rs"]))
+        return data.drop(["change", "gain", "loss", "avgGain", "avgLoss", "rs"], 1)
 
-        data["H-L"] = data["High"] - data["Low"]
-        data["H-PC"] = abs(data["High"] - data["Close"].shift(1))
-        data["L-PC"] = abs(data["Low"] - data["Close"].shift(1))
-        data["TR"] = data[["H-L", "H-PC", "L-PC"]].max(axis=1, skipna=False)
-        data["ATR"] = data["TR"].ewm(com=num_days, min_periods=num_days).mean()
-        return data
+    def ADX(self, n=14):
+        """
+        Calculate ADX.
 
-    def bollinger_band(self, num_days=14):
-        "function to calculate Bollinger Band"
-        data = self.average_true_range()
-        data["middle_band"] = data["Close"].rolling(num_days).mean()
-        data["upper_band"] = data["middle_band"] + 2 * data["Close"].rolling(
-            num_days
-        ).std(ddof=0)
-        data["lower_band"] = data["middle_band"] - 2 * data["Close"].rolling(
-            num_days
-        ).std(ddof=0)
-        data["BB_Width"] = data["upper_band"] - data["lower_band"]
-        return data.drop(["middle_band", "upper_band", "lower_band"], 1)
-
-    def ADX(self, n=20):
-        "function to calculate ADX"
-        data = self.bollinger_band()
+        Returns
+        -------
+        pandas.DataFrame
+            DataFrame with ADX data added.
+        """
+        data = self.RSI()
         data = data.copy()
         data["upmove"] = data["High"] - data["High"].shift(1)
         data["downmove"] = data["Low"].shift(1) - data["Low"]
@@ -127,4 +142,27 @@ class TechnicalIndicatorGenerator:
             .ewm(alpha=1 / n, min_periods=n)
             .mean()
         )
+
+        return data.drop(["upmove", "downmove", "+dm", "-dm", "+di", "-di"], 1)
+
+    def generate_direction(self):
+        """
+        Returns
+        -------
+        pandas.DataFrame
+            DataFrame with direction `1` if there is an increase in the stock price with
+            respect to the previous price, else `0`.
+        """
+        data = self.ADX()
+        data["direction"] = np.where(data["Close"].diff() > 0, 1, 0)
         return data
+
+    def return_final_data(self):
+        """
+        Returns
+        -------
+        pandas.DataFrame
+            The final cleaned tabular data.
+        """
+        data = self.generate_direction()
+        return data.dropna()
