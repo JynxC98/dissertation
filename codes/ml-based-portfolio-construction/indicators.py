@@ -52,7 +52,7 @@ class TechnicalIndicatorGenerator:
             DataFrame with moving average data added
         """
         data = self.data.copy()
-        data["moving_average"] = data["Close"].rolling(window=period).mean()
+        data["Moving Average"] = data["Close"].rolling(window=period).mean()
         return data
 
     def moving_average_convergence_divergence(self, fast=12, slow=26, signal=9):
@@ -85,29 +85,48 @@ class TechnicalIndicatorGenerator:
         data["ma_slow"] = data["Close"].ewm(span=slow, min_periods=slow).mean()
         data["macd"] = data["ma_fast"] - data["ma_slow"]
         data["signal"] = data["macd"].ewm(span=signal, min_periods=signal).mean()
-        data["market_type"] = np.where(data["macd"] > data["signal"], 1, 0)
-        return data.drop(["ma_fast", "ma_slow", "signal", "macd"], 1)
+        data["Market Type"] = np.where(data["macd"] > data["signal"], 1, 0)
+        return data.drop(["ma_fast", "ma_slow", "signal", "macd"], axis=1)
 
-    def RSI(self, n=14):
+    def average_true_range(self, num_days=14):
         """
-        Calculates the RSI
+        Calculate True Range and Average True Range.
 
         Returns
         -------
         pandas.DataFrame
-            DataFrame with RSI added.
+            DataFrame with ATR data added.
         """
         data = self.moving_average_convergence_divergence()
+
+        data["H-L"] = data["High"] - data["Low"]
+        data["H-PC"] = abs(data["High"] - data["Close"].shift(1))
+        data["L-PC"] = abs(data["Low"] - data["Close"].shift(1))
+        data["TR"] = data[["H-L", "H-PC", "L-PC"]].max(axis=1, skipna=False)
+        data["ATR"] = data["TR"].ewm(com=num_days, min_periods=num_days).mean()
+        return data.drop(["H-L", "H-PC", "L-PC", "TR"], 1)
+
+    def relative_strength_index(self, n=14):
+        """
+        Calculates RSI
+
+        Returns
+        -------
+        pandas.DataFrame
+            Dataframe with RSI added
+
+        """
+        data = self.average_true_range()
         data["change"] = data["Close"] - data["Close"].shift(1)
         data["gain"] = np.where(data["change"] >= 0, data["change"], 0)
         data["loss"] = np.where(data["change"] < 0, -1 * data["change"], 0)
         data["avgGain"] = data["gain"].ewm(alpha=1 / n, min_periods=n).mean()
         data["avgLoss"] = data["loss"].ewm(alpha=1 / n, min_periods=n).mean()
         data["rs"] = data["avgGain"] / data["avgLoss"]
-        data["rsi"] = 100 - (100 / (1 + data["rs"]))
+        data["RSI"] = 100 - (100 / (1 + data["rs"]))
         return data.drop(["change", "gain", "loss", "avgGain", "avgLoss", "rs"], 1)
 
-    def ADX(self, n=14):
+    def average_directional_index(self, n=14):
         """
         Calculate ADX.
 
@@ -116,8 +135,7 @@ class TechnicalIndicatorGenerator:
         pandas.DataFrame
             DataFrame with ADX data added.
         """
-        data = self.RSI()
-        data = data.copy()
+        data = self.relative_strength_index()
         data["upmove"] = data["High"] - data["High"].shift(1)
         data["downmove"] = data["Low"].shift(1) - data["Low"]
         data["+dm"] = np.where(
@@ -153,8 +171,8 @@ class TechnicalIndicatorGenerator:
             DataFrame with direction `1` if there is an increase in the stock price with
             respect to the previous price, else `0`.
         """
-        data = self.ADX()
-        data["direction"] = np.where(data["Close"].diff() > 0, 1, 0)
+        data = self.average_directional_index()
+        data["Direction"] = np.where(data["Close"].diff() > 0, 1, 0)
         return data
 
     def return_final_data(self):
