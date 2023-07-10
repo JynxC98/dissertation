@@ -1,4 +1,9 @@
 # Daily logs to record the progress
+### 9th and 10th July
+1. Implemented the changes as required.
+2. Wrote more literature for the Lit Review section
+### 8th July
+1. Shift(13 hours)
 ### 6th July and 7th July
 1. Finished coding technical indicators
 2. Studied about martingales and geometric brownian motion
@@ -14,7 +19,7 @@
    - A hybrid stock trading framework integrating technical analysis with
 machine learning techniques.
    - Technical analysis strategy optimization using a machine learning
-approach in stock market indices.
+   approach in stock market indices.
    - Performance analysis of the integration between Portfolio Optimization and Technical Analysis strategies in the Brazilian stock market
    - Predicting the direction of stock market prices using tree-based classifiers.
    - Investment strategies using technical analysis & predictive modelling in emerging markets.
