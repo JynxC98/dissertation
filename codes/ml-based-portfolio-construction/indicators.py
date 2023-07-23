@@ -10,12 +10,14 @@ url: https://www.udemy.com/course/algorithmic-trading-quantitative-analysis-usin
 from typing import Type
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import MinMaxScaler
 
 
 class TechnicalIndicatorGenerator:
     """
     Class to generate various technical indicators and direction signals based on stock data.
-    The class calculates the following technical indicators: MACD, ATR, Bollinger Bands, RSI, ADX, and Renko.
+    The class calculates the following technical indicators: MA, MACD, ATR,  RSI, Stochastic Oscillator,
+    RSI, Williams%R
 
     Parameters
     ----------
@@ -37,6 +39,26 @@ class TechnicalIndicatorGenerator:
     def __init__(self, data: Type[pd.DataFrame]) -> None:
         self.data = data
 
+    def exponential_smoothing(self, alpha=0.2) -> Type[pd.DataFrame]:
+        """
+        Applies exponential smoothing to the input data.
+
+        Parameters:
+            data (Series or DataFrame): Time series data to be smoothed.
+            alpha (float): Smoothing factor (default: 0.5).
+                           Values closer to 1 give more weight to recent observations.
+
+        Returns:
+            Series or DataFrame: Smoothed time series data.
+        """
+        smoothed_data = self.data.copy()
+        smoothed_data["Smoothened Close"] = (
+            smoothed_data["Close"].ewm(alpha=alpha).mean()
+        )
+        smoothed_data["Price Change"] = smoothed_data["Smoothened Close"].pct_change()
+
+        return smoothed_data
+
     def calculate_moving_average(self, period=14) -> Type[pd.DataFrame]:
         """
         Calculates the moving average of the stock prices.
@@ -51,11 +73,69 @@ class TechnicalIndicatorGenerator:
         pandas.DataFrame
             DataFrame with moving average data added
         """
-        data = self.data.copy()
-        data["Moving Average"] = data["Close"].rolling(window=period).mean()
+        data = self.exponential_smoothing()
+        data["Moving Average"] = data["Smoothened Close"].rolling(window=period).mean()
+        data["Moving Average Change"] = data["Moving Average"].pct_change()
         return data
 
-    def moving_average_convergence_divergence(self, fast=12, slow=26, signal=9):
+    def calculate_trend(self) -> Type[pd.DataFrame]:
+        """
+        Rules for setting trend
+        1. The closing value must lead (lag) its 25 day moving average
+        2. The 25 day moving average must lead (lag) 65 day moving
+        average.
+        3. The 25 day moving average must have been rising (falling)
+        for at least 5 days.
+        4. The 65 day moving average must have been rising (falling)
+        for at least 1 day.
+
+        Uptrend is denoted by 1
+        Downtrend is denoted by -1
+        No trend is denoted by 0
+
+        Returns
+        -------
+        pandas.DataFrame
+            DataFrame with trend data added
+        """
+        # Calculate moving averages
+        data = self.calculate_moving_average()
+        data["MA25"] = data["Smoothened Close"].rolling(window=25).mean()
+        data["MA65"] = data["Smoothened Close"].rolling(window=65).mean()
+
+        # Calculate the change in moving averages
+        data["MA25_Diff"] = data["MA25"].diff(periods=5)
+        data["MA65_Diff"] = data["MA65"].diff(periods=1)
+
+        # Initialize the 'Trend' column to 'No Trend'
+        data["Trend"] = 0
+
+        # Identify uptrends according to the given conditions
+        data.loc[
+            (data["Smoothened Close"] > data["MA25"])
+            & (data["MA25"] > data["MA65"])
+            & (data["MA25_Diff"] > 0)
+            & (data["MA65_Diff"] > 0),
+            "Trend",
+        ] = 1
+
+        # Identify downtrends according to the given conditions
+        data.loc[
+            (data["Smoothened Close"] < data["MA25"])
+            & (data["MA25"] < data["MA65"])
+            & (data["MA25_Diff"] < 0)
+            & (data["MA65_Diff"] < 0),
+            "Trend",
+        ] = -1
+
+        data["Trend"] = data["Trend"].astype(int)
+        data["Trend"] = data["Trend"].shift(-1)
+
+        return data.drop(["MA25", "MA65", "MA25_Diff", "MA65_Diff"], axis=1)
+
+    def moving_average_convergence_divergence(
+        self, fast=12, slow=26, signal=9
+    ) -> Type[pd.DataFrame]:
         """
         Calculate the MACD (Moving Average Convergence Divergence) Indicator.
 
@@ -80,15 +160,19 @@ class TechnicalIndicatorGenerator:
             market_type: 0 if macd < signal (Bearish Phase)
 
         """
-        data = self.calculate_moving_average()
-        data["ma_fast"] = data["Close"].ewm(span=fast, min_periods=fast).mean()
-        data["ma_slow"] = data["Close"].ewm(span=slow, min_periods=slow).mean()
+        data = self.calculate_trend()
+        data["ma_fast"] = (
+            data["Smoothened Close"].ewm(span=fast, min_periods=fast).mean()
+        )
+        data["ma_slow"] = (
+            data["Smoothened Close"].ewm(span=slow, min_periods=slow).mean()
+        )
         data["macd"] = data["ma_fast"] - data["ma_slow"]
         data["signal"] = data["macd"].ewm(span=signal, min_periods=signal).mean()
-        data["Market Type"] = np.where(data["macd"] > data["signal"], 1, 0)
-        return data.drop(["ma_fast", "ma_slow", "signal", "macd"], axis=1)
+        # data["Market Type"] = np.where(data["macd"] > data["signal"], 1, 0)
+        return data.drop(["ma_fast", "ma_slow", "signal"], axis=1)
 
-    def average_true_range(self, num_days=14):
+    def average_true_range(self, num_days=14) -> Type[pd.DataFrame]:
         """
         Calculate True Range and Average True Range.
 
@@ -100,13 +184,13 @@ class TechnicalIndicatorGenerator:
         data = self.moving_average_convergence_divergence()
 
         data["H-L"] = data["High"] - data["Low"]
-        data["H-PC"] = abs(data["High"] - data["Close"].shift(1))
-        data["L-PC"] = abs(data["Low"] - data["Close"].shift(1))
+        data["H-PC"] = abs(data["High"] - data["Smoothened Close"].shift(1))
+        data["L-PC"] = abs(data["Low"] - data["Smoothened Close"].shift(1))
         data["TR"] = data[["H-L", "H-PC", "L-PC"]].max(axis=1, skipna=False)
         data["ATR"] = data["TR"].ewm(com=num_days, min_periods=num_days).mean()
         return data.drop(["H-L", "H-PC", "L-PC", "TR"], 1)
 
-    def relative_strength_index(self, n=14):
+    def relative_strength_index(self, n=14) -> Type[pd.DataFrame]:
         """
         Calculates RSI
 
@@ -117,7 +201,7 @@ class TechnicalIndicatorGenerator:
 
         """
         data = self.average_true_range()
-        data["change"] = data["Close"] - data["Close"].shift(1)
+        data["change"] = data["Smoothened Close"] - data["Smoothened Close"].shift(1)
         data["gain"] = np.where(data["change"] >= 0, data["change"], 0)
         data["loss"] = np.where(data["change"] < 0, -1 * data["change"], 0)
         data["avgGain"] = data["gain"].ewm(alpha=1 / n, min_periods=n).mean()
@@ -126,44 +210,68 @@ class TechnicalIndicatorGenerator:
         data["RSI"] = 100 - (100 / (1 + data["rs"]))
         return data.drop(["change", "gain", "loss", "avgGain", "avgLoss", "rs"], 1)
 
-    def average_directional_index(self, n=14):
+    def calculate_stochastic_oscillator(self, window=14) -> Type[pd.DataFrame]:
         """
-        Calculate ADX.
-
         Returns
         -------
         pandas.DataFrame
-            DataFrame with ADX data added.
+            DataFrame with %K and %D added
         """
+        # Calculate the lowest and highest prices in the rolling window
         data = self.relative_strength_index()
-        data["upmove"] = data["High"] - data["High"].shift(1)
-        data["downmove"] = data["Low"].shift(1) - data["Low"]
-        data["+dm"] = np.where(
-            (data["upmove"] > data["downmove"]) & (data["upmove"] > 0),
-            data["upmove"],
-            0,
+        data["Lowest Low"] = data["Low"].rolling(window).min()
+        data["Highest High"] = data["High"].rolling(window).max()
+
+        # Calculate the %K and %D values
+        data["%K"] = (
+            (data["Smoothened Close"] - data["Lowest Low"])
+            / (data["Highest High"] - data["Lowest Low"])
+            * 100
         )
-        data["-dm"] = np.where(
-            (data["downmove"] > data["upmove"]) & (data["downmove"] > 0),
-            data["downmove"],
-            0,
-        )
-        data["+di"] = (
-            100 * (data["+dm"] / data["ATR"]).ewm(alpha=1 / n, min_periods=n).mean()
-        )
-        data["-di"] = (
-            100 * (data["-dm"] / data["ATR"]).ewm(alpha=1 / n, min_periods=n).mean()
-        )
-        data["ADX"] = (
-            100
-            * abs((data["+di"] - data["-di"]) / (data["+di"] + data["-di"]))
-            .ewm(alpha=1 / n, min_periods=n)
-            .mean()
+        data["%D"] = (
+            data["%K"].rolling(3).mean()
+        )  # Using a 3-period moving average for %D
+
+        return data.drop(["Lowest Low", "Highest High"], axis=1)
+
+    def calculate_williams_percent_range(self, window=14) -> Type[pd.DataFrame]:
+        """
+        Returns
+        -------
+        pandas.DataFrame
+            DataFrame with Williams % Range
+
+        """
+        data = self.calculate_stochastic_oscillator()
+        highest_high = data["High"].rolling(window=window).max()
+        lowest_low = data["Low"].rolling(window=window).min()
+
+        data["W%R"] = (
+            (highest_high - data["Smoothened Close"])
+            / (highest_high - lowest_low)
+            * -100
         )
 
-        return data.drop(["upmove", "downmove", "+dm", "-dm", "+di", "-di"], 1)
+        return data
 
-    def generate_direction(self):
+    def calculate_obv(self) -> Type[pd.DataFrame]:
+        """
+        Returns
+        -------
+        pandas.DataFrame
+            DataFrame with on balance volume
+
+        """
+        data = self.calculate_williams_percent_range()
+
+        data["OBV"] = (
+            (np.sign(data["Smoothened Close"].diff()) * data["Volume"])
+            .fillna(0)
+            .cumsum()
+        )
+        return data
+
+    def generate_direction(self, shift_period=-1) -> Type[pd.DataFrame]:
         """
         Returns
         -------
@@ -171,16 +279,43 @@ class TechnicalIndicatorGenerator:
             DataFrame with direction `1` if there is an increase in the stock price with
             respect to the previous price, else `0`.
         """
-        data = self.average_directional_index()
-        data["Direction"] = np.where(data["Close"].diff() > 0, 1, 0)
+        data = self.calculate_obv()
+        # data['Future Return'] = data['Smoothened Close'].shift(shift_period) / data['Smoothened Close'] - 1
+        # data['Direction'] = np.where(data['Future Return'] > 0, 1, 0)
+        data["Direction"] = np.where(data["Smoothened Close"].diff() > 0, 1, 0)
         return data
 
-    def return_final_data(self):
+    def drop_unnecessary_features(self) -> Type[pd.DataFrame]:
         """
         Returns
         -------
         pandas.DataFrame
             The final cleaned tabular data.
         """
-        data = self.generate_direction()
-        return data.dropna()
+        data = self.calculate_obv()
+        return data.drop(
+            [
+                "Open",
+                "High",
+                "Low",
+                "Stock Splits",
+                "Dividends",
+                "Close",
+                "Moving Average",
+                "Volume",
+            ],
+            axis=1,
+        ).dropna()
+
+    def return_final_data(self) -> Type[pd.DataFrame]:
+        """
+        Returns Scaled data
+        """
+        scaler = MinMaxScaler(feature_range=(0, 1))
+        data = self.drop_unnecessary_features()
+        X = data.drop(["Trend"], axis=1)
+        y = data["Trend"]
+        cols = X.columns
+        X = pd.DataFrame(scaler.fit_transform(X), columns=cols, index=data.index)
+        final_data = pd.concat([X, y], axis=1)
+        return final_data
