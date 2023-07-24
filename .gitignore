@@ -166,3 +166,5 @@ test.py
 *.html
 /images
 *.ipynb
+# Excluding all the picke files
+*.pkl

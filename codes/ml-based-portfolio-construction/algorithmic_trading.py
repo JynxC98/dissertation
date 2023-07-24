@@ -1,9 +1,21 @@
 from typing import Type
 import datetime
+from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 from xgboost import XGBClassifier
+import yfinance as yf
+
+from indicators import TechnicalIndicatorGenerator
+
+
+def price_difference(price_1, price_2):
+    """
+    price_1: The base price
+    price_2: The current price
+    """
+    return (price_1 - price_2) / price_1
 
 
 class AlgorithmicTrading:
@@ -135,6 +147,13 @@ class AlgorithmicTrading:
                 current_sell = price
 
             elif (
+                price < 0.9 * current_buy and self.position == "HOLD"
+            ):  # Stop loss irrespective of the trend
+                self.sell_shares(price)
+                self.sell_signals[date] = price
+                current_sell = price
+
+            elif (
                 predicted_trend == -1
                 and price < 0.95 * current_buy
                 and self.position == "HOLD"
@@ -148,32 +167,45 @@ class AlgorithmicTrading:
     def plot_trades(self):
         self.execute_date()
         start_date = self.start_date
-        plt.figure(figsize=(14, 7))
-        plt.plot(
-            self.data.loc[start_date:].index,
-            self.data.loc[start_date:]["Smoothened Close"],
-            color="k",
-            label="Close price",
+
+        # Trace for the close price line
+        close_trace = go.Scatter(
+            x=self.data.loc[start_date:].index,
+            y=self.data.loc[start_date:]["Smoothened Close"],
+            mode="lines",
+            name="Close price",
+            line=dict(color="black"),
         )
-        plt.plot_date(
-            list(self.buy_signals.keys()),
-            list(self.buy_signals.values()),
-            color="g",
-            marker="^",
-            label="Buy",
+
+        # Traces for buy and sell signals
+        buy_traces = go.Scatter(
+            x=list(self.buy_signals.keys()),
+            y=list(self.buy_signals.values()),
+            mode="markers",
+            name="Buy",
+            marker=dict(color="green", symbol="triangle-up", size=10),
         )
-        plt.plot_date(
-            list(self.sell_signals.keys()),
-            list(self.sell_signals.values()),
-            color="r",
-            marker="v",
-            label="Sell",
+        sell_traces = go.Scatter(
+            x=list(self.sell_signals.keys()),
+            y=list(self.sell_signals.values()),
+            mode="markers",
+            name="Sell",
+            marker=dict(color="red", symbol="triangle-down", size=10),
         )
-        plt.xlabel("Date")
-        plt.ylabel("Price")
-        plt.title("Trade Execution Plot")
-        plt.legend()
-        plt.show()
+
+        # Layout
+        layout = go.Layout(
+            title=f"Trade Execution Plot for {self.stock}",
+            xaxis=dict(title="Date"),
+            yaxis=dict(title="Price"),
+            showlegend=True,
+        )
+
+        # Combine all traces into a single figure
+        fig = go.Figure(data=[close_trace, buy_traces, sell_traces], layout=layout)
+
+        # Show the figure
+        fig.show()
 
     def return_stats(self):
         self.plot_trades()
