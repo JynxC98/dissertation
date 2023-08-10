@@ -349,7 +349,9 @@ class StockSelection:
             coloraxis_colorbar=dict(title="Sharpe Ratio"),
             showlegend=True,
         )
-        # fig.write_html("images/efficient_portfolio.html")
+        fig.write_image(
+            "images/efficient_portfolio.png", width=1000, height=500, scale=5
+        )
         fig.show()
 
 

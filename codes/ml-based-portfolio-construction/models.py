@@ -1,115 +1,109 @@
 """
-Script to simulate the necessary models.
+Script to feed the data into the machine learning model.
 """
-from typing import List, Type
-from datetime import datetime, timedelta
+import warnings
+from typing import Type
+from datetime import datetime, timedelta, date
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
+import plotly.express as px
+import plotly.graph_objects as go
+import yfinance as yf
+
+from sklearn.model_selection import train_test_split, TimeSeriesSplit
+from sklearn.preprocessing import StandardScaler
+from sklearn.utils import resample
+from sklearn.metrics import classification_report
+from sklearn.model_selection import TimeSeriesSplit
+from scipy.signal import argrelextrema
+
+from xgboost import XGBClassifier
 
 
-class TradingStrategy:
-    def __init__(
-        self,
-        data,
-        initial_investment=10e6,
-        transaction_cost=0.001,
-        tax_rate=0.15,
-        profit_threshold=10e5,
-    ):
-        self.data = data
-        self.initial_investment = initial_investment
-        self.transaction_cost = transaction_cost
-        self.tax_rate = tax_rate
-        self.profit_threshold = profit_threshold
-        self.cash = initial_investment
-        self.portfolio = {}
-        self.trades = []
+from indicators import TechnicalIndicatorGenerator
 
-    def calculate_indicators(self):
-        self.data["sma"] = SMAIndicator(
-            close=self.data["Close"], window=14
-        ).sma_indicator()
-        self.data["rsi"] = RSIIndicator(close=self.data["Close"]).rsi()
-        self.data["stoch"] = StochasticOscillator(
-            high=self.data["High"], low=self.data["Low"], close=self.data["Close"]
-        ).stoch()
-        self.data["atr"] = AverageTrueRange(
-            high=self.data["High"], low=self.data["Low"], close=self.data["Close"]
-        ).average_true_range()
-        self.data["williams"] = (
-            self.data["Close"]
-            .rolling(14)
-            .apply(lambda x: ((np.max(x) - x[-1]) / (np.max(x) - np.min(x))) * -100)
+warnings.filterwarnings("ignore")
+
+
+class GeneratePredictions:
+    """ """
+
+
+def calculate_vertical_levels(data, threshold=3):
+    """
+    Calculates the vertical resistance and support levels based on price data.
+
+    Parameters:
+        data (DataFrame): Price data containing 'High', 'Low', and 'Close' columns.
+        threshold (int): Number of times the price should touch a level (default: 3).
+
+    Returns:
+        tuple: Last resistance and support levels.
+    """
+    resistance_levels = []
+    support_levels = []
+
+    # Calculate local maximas and minimas
+    maximas = argrelextrema(data["High"].values, np.greater_equal, order=threshold)[0]
+    minimas = argrelextrema(data["Low"].values, np.less_equal, order=threshold)[0]
+
+    # if maximas or minimas found, add them as resistance and support levels
+    if maximas.any():
+        resistance_levels.extend(data["High"].iloc[maximas].tolist())
+
+    if minimas.any():
+        support_levels.extend(data["Low"].iloc[minimas].tolist())
+
+    # Plotting the last resistance and support levels with closing price
+    plt.figure(figsize=(12, 6))
+    plt.plot(data["Close"], label="Closing Price")
+
+    if resistance_levels:
+        plt.hlines(
+            resistance_levels[-1],
+            xmin=data.index[0],
+            xmax=data.index[-1],
+            colors="r",
+            label="Resistance",
+        )
+    if support_levels:
+        plt.hlines(
+            support_levels[-1],
+            xmin=data.index[0],
+            xmax=data.index[-1],
+            colors="g",
+            label="Support",
         )
 
-    def generate_signals(self):
-        buy_signals = (
-            (self.data["Close"] > self.data["sma"])
-            & (self.data["rsi"] < 30)
-            & (self.data["stoch"] < 20)
-            & (self.data["williams"] > -80)
-        )
-        sell_signals = (
-            (self.data["Close"] < self.data["sma"])
-            & (self.data["rsi"] > 70)
-            & (self.data["stoch"] > 80)
-            & (self.data["williams"] < -20)
-        )
-        self.data["signal"] = np.where(
-            buy_signals, "buy", np.where(sell_signals, "sell", "hold")
-        )
+    plt.xlabel("Date")
+    plt.ylabel("Price")
+    plt.title("Vertical Resistance and Support Levels")
+    plt.legend()
+    plt.show()
 
-    def execute_trades(self):
-        for i, row in self.data.iterrows():
-            if row["signal"] == "buy":
-                shares_to_buy = self.cash // (
-                    row["Close"] * (1 + self.transaction_cost)
-                )
-                self.cash -= shares_to_buy * row["Close"] * (1 + self.transaction_cost)
-                self.portfolio[i] = shares_to_buy
-                self.trades.append(("buy", i, row["Close"]))
+    return (
+        resistance_levels[-1] if resistance_levels else None,
+        support_levels[-1] if support_levels else None,
+    )
 
-            elif row["signal"] == "sell" and i in self.portfolio:
-                shares_to_sell = self.portfolio[i]
-                self.cash += shares_to_sell * row["Close"] * (1 - self.transaction_cost)
-                del self.portfolio[i]
-                self.trades.append(("sell", i, row["Close"]))
 
-            if self.cash - self.initial_investment > self.profit_threshold:
-                tax = (self.cash - self.initial_investment) * self.tax_rate
-                self.cash -= tax
+params = {
+    "colsample_bytree": 0.760869675435,
+    "gamma": 0.029041340790919024,
+    "learning_rate": 0.0888082370556709,
+    "max_depth": 9,
+    "n_estimators": 422,
+    "subsample": 0.9505754827278782,
+}
 
-    def plot_signals(self):
-        buys = self.data.loc[self.data["signal"] == "buy"]
-        sells = self.data.loc[self.data["signal"] == "sell"]
 
-        plt.figure(figsize=(12, 5))
-        plt.plot(self.data["Close"], label="Close Price", color="blue", alpha=0.3)
-        plt.scatter(
-            buys.index,
-            buys["Close"],
-            color="green",
-            label="Buy Signal",
-            marker="^",
-            alpha=1,
-        )
-        plt.scatter(
-            sells.index,
-            sells["Close"],
-            color="red",
-            label="Sell Signal",
-            marker="v",
-            alpha=1,
-        )
-        plt.title("Stock Price with Buy/Sell Signals")
-        plt.xlabel("Date")
-        plt.ylabel("Price")
-        plt.legend(loc="upper left")
-        plt.grid()
-        plt.show()
-
-    def simulate(self):
-        self.calculate_indicators()
-        self.generate_signals()
-        self.execute_trades()
-        self.plot_signals()
+{
+    "subsample": 1.0,
+    "n_estimators": 200,
+    "min_child_weight": 1,
+    "max_depth": 5,
+    "learning_rate": 0.01,
+    "gamma": 0.1,
+    "colsample_bytree": 0.8,
+}

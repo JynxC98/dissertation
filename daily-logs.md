@@ -1,4 +1,12 @@
 # Daily logs to record the progress
+### 11th-14th July
+1. Finished coding the XGBoost logic for predicting the trend.
+2. Referring to the book `The Science of Algorithmic Trading and Portfolio Management`
+3. Implemented a trading rule for the stocks based on technical indicators.
+4. Worked on hypermarameter tuning of the model.
+5. Completed the 90% of the literature review.
+6. Started working on implementing the code of expected shortfall.
+7. Started reading the literature based on Options as a hedging tool.
 ### 9th and 10th July
 1. Implemented the changes as required.
 2. Wrote more literature for the Lit Review section

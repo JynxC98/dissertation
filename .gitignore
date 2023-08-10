@@ -168,3 +168,5 @@ test.py
 *.ipynb
 # Excluding all the picke files
 *.pkl
+# Excluding all images
+*.png

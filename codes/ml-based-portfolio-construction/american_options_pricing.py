@@ -1,3 +1,9 @@
+"""
+Script to calculate the value of an American style put option using binomial 
+tree method and CRR Parameterisation.
+"""
+
+
 import numpy as np
 
 
@@ -49,15 +55,15 @@ def american_option_binomial_tree(S, K, T, r, v, q, N, option_type):
     return fs[0][0]
 
 
-# Test the function
-S = 2500  # underlying asset price
-K = 1750  # option strike price
-T = 1  # time to maturity
-r = 0.05  # risk-free rate
-v = 0.3  # volatility of underlying asset
-q = 0  # dividend yield
-N = 100  # number of steps
-option_type = "put"  # 'call' or 'put'
+if __name__ == "__main__":
+    S = 2500  # underlying asset price
+    K = 1750  # option strike price
+    T = 1  # time to maturity
+    r = 0.05  # risk-free rate
+    v = 0.3  # volatility of underlying asset
+    q = 0  # dividend yield
+    N = 100  # number of steps
+    option_type = "put"  # 'call' or 'put'
 
-price = american_option_binomial_tree(S, K, T, r, v, q, N, option_type)
-print("The price of the American {} option is {:.2f}".format(option_type, price))
+    price = american_option_binomial_tree(S, K, T, r, v, q, N, option_type)
+    print(f"The price of the American {option_type} option is  {price}.")
